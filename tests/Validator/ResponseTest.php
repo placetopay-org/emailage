@@ -68,6 +68,7 @@ class ResponseTest extends BaseTestCase
         $this->assertNull($riskResponse->riskReasonMessage());
         $this->assertNull($riskResponse->riskAdviceMessage());
         $this->assertEquals(3, $riskResponse->ipRiskLevel());
+        $this->assertEquals('Moderate', $riskResponse->ipRiskLevelMessage());
         $this->assertEquals([
             'ip' => '181.138.47.194',
             'isp' => '',
@@ -86,5 +87,16 @@ class ResponseTest extends BaseTestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals('7', $response->flagReason());
+    }
+
+    public function testItParsesABadCall()
+    {
+        $result = $this->unserialize('czozMTY6Iu+7v3sicXVlcnkiOnsiaXBhZGRyZXNzIjoiMTgxLjEzOC40Ny4xOTQiLCJxdWVyeVR5cGUiOiJJUFJpc2siLCJjb3VudCI6MSwiY3JlYXRlZCI6IjIwMTctMDYtMTBUMDA6MDk6MDFaIiwibGFuZyI6ImVuLVVTIiwicmVzcG9uc2VDb3VudCI6MCwicmVzdWx0cyI6W119LCJyZXNwb25zZVN0YXR1cyI6eyJzdGF0dXMiOiJmYWlsZWQiLCJlcnJvckNvZGUiOiIzMDAxIiwiZGVzY3JpcHRpb24iOiJBdXRoZW50aWNhdGlvbiBFcnJvcjogVGhlIHNpZ25hdHVyZSBkb2VzIG5vdCBtYXRjaCBvciB0aGUgdXNlci9jb25zdW1lciBrZXkgd2FzIG5vdCBmb3VuZC4ifX0iOw==');
+        $response = new \PlacetoPay\Emailage\Messages\RiskResponse($result);
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertEquals('IPRisk', $response->queryType());
+        $this->assertEquals(3001, $response->errorCode());
+        $this->assertEquals('Authentication Error: The signature does not match or the user/consumer key was not found.', $response->errorMessage());
     }
 }
