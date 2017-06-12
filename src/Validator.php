@@ -81,7 +81,7 @@ class Validator
 
         try {
             $response = $client->request('POST', $url, [
-                'form_params' => $additional,
+                'form_params' => $this->parseAdditional($additional),
             ]);
             return $response->getBody()->getContents();
         } catch (BadResponseException $e) {
@@ -98,6 +98,65 @@ class Validator
 
         // Make and return the Hash.
         return base64_encode(hash_hmac(strtolower($this->signatureMethod), join('&', $hash_Params), $this->token . '&', TRUE));
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    public function parseAdditional($data)
+    {
+        $parsed = [];
+        if (isset($data['payer'])) {
+            $payer = $data['payer'];
+
+            $parsed = array_merge($parsed, [
+                'firstname' => isset($payer['name']) ? $payer['name'] : null,
+                'lastname' => isset($payer['surname']) ? $payer['surname'] : null,
+                'phone' => isset($payer['mobile']) ? $payer['mobile'] : null,
+            ]);
+
+            if (isset($payer['address'])) {
+                $parsed = array_merge($parsed, [
+                    'billaddress' => isset($payer['address']['street']) ? $payer['address']['street'] : null,
+                    'billcity' => isset($payer['address']['city']) ? $payer['address']['city'] : null,
+                    'billregion' => isset($payer['address']['state']) ? $payer['address']['state'] : null,
+                    'billpostal' => isset($payer['address']['postalCode']) ? $payer['address']['postalCode'] : null,
+                    'billcountry' => isset($payer['address']['country']) ? $payer['address']['country'] : null,
+                ]);
+
+                if (!isset($payer['mobile'])) {
+                    $parsed['phone'] = isset($payer['address']['phone']) ? $payer['address']['phone'] : null;
+                }
+            }
+
+        }
+        if (isset($data['payment'])) {
+            $payment = $data['payment'];
+
+            if (isset($payment['amount'])) {
+                $parsed = array_merge($parsed, [
+                    'transamount' => isset($payment['amount']['total']) ? $payment['amount']['total'] : null,
+                    'transcurrency' => isset($payment['amount']['currency']) ? $payment['amount']['currency'] : null,
+                ]);
+            }
+            if (isset($payment['shipping']) && isset($payment['shipping']['address'])) {
+                $shipping = $payment['shipping']['address'];
+                $parsed = array_merge($parsed, [
+                    'shipaddress' => isset($shipping['street']) ? $shipping['street'] : null,
+                    'shipcity' => isset($shipping['city']) ? $shipping['city'] : null,
+                    'shipregion' => isset($shipping['state']) ? $shipping['state'] : null,
+                    'shippostal' => isset($shipping['postalCode']) ? $shipping['postalCode'] : null,
+                    'shipcountry' => isset($shipping['country']) ? $shipping['country'] : null,
+                ]);
+            }
+        }
+
+        if (isset($data['userAgent'])) {
+            $parsed['useragent'] = $data['userAgent'];
+        }
+
+        return array_filter($parsed);
     }
 
     /**

@@ -17,10 +17,60 @@ $emailage = new \PlacetoPay\Emailage\Validator([
 ]);
 ```
 
+
+### Additional parameters
+
+You can send additional information to Emailage with the following structure
+
+```
+$additional = [
+    // Person related
+    'payer' => [
+        'name' => 'Diego',
+        'surname' => 'Calle',
+        'email' => 'dnetix@gmail.com',
+        'document' => '1040035000',
+        'documentType' => 'CC',
+        'address' => [
+            'street' => 'Fake street 123',
+            'city' => 'Medellin',
+            'state' => 'Antioquia',
+            'postalCode' => '050012',
+            'country' => 'CO',
+            'phone' => '4442310',
+        ],
+    ],
+    'payment' => [
+        'reference' => '1234',
+        'amount' => [
+            'currency' => 'COP',
+            'total' => '12300',
+        ],
+        'shipping' => [
+            'name' => 'Diego',
+            'surname' => 'Calle',
+            'email' => 'fake@email.com',
+            'address' => [
+                'street' => 'Fake street 321',
+                'city' => 'Sabaneta',
+                'state' => 'Antioquia',
+                'postalCode' => '050013',
+                'country' => 'CO',
+                'phone' => '4442310',
+            ],
+        ],
+    ],
+    'ipAddress' => '127.0.0.1',
+    'userAgent' => 'Chrome XYZ',
+];
+```
+
 ### Validating an email
 
+Keep in mind that additional it's optional
+
 ```php
-$result = $emailage->query('test@example.com');
+$result = $emailage->query('test@example.com', $additional);
 if ($result->isSuccessful()) {
     // There are more information about the response, see src/Messages/RiskResponse
     $score = $result->score();
