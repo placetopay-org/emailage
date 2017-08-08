@@ -29,6 +29,7 @@ class Validator
     protected $token;
 
     protected $sandbox = false;
+    protected $verify_ssl = true;
 
     const FR_CARD_NOT_PRESENT_FRAUD = 1;
     const FR_CUSTOMER_DISPUTE = 2;
@@ -61,6 +62,9 @@ class Validator
 
         if (isset($settings['sandbox']))
             $this->sandbox = filter_var($settings['sandbox'], FILTER_VALIDATE_BOOLEAN);
+
+        if (isset($settings['verify_ssl']))
+            $this->verify_ssl = filter_var($settings['verify_ssl'], FILTER_VALIDATE_BOOLEAN);
     }
 
     private function execute($url, $parameters, $additional = [])
@@ -82,6 +86,7 @@ class Validator
         try {
             $response = $client->request('POST', $url, [
                 'form_params' => $this->parseAdditional($additional),
+                'verify' => $this->verify_ssl,
             ]);
             return $response->getBody()->getContents();
         } catch (BadResponseException $e) {

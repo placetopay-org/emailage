@@ -17,6 +17,8 @@ $emailage = new \PlacetoPay\Emailage\Validator([
 ]);
 ```
 
+Also can provide "verify_ssl" boolean to check or ignore valid ssl certificates
+
 
 ### Additional parameters
 
