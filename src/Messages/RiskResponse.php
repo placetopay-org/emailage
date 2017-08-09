@@ -189,8 +189,8 @@ class RiskResponse extends Message
     {
         return [
             'ip' => $this->resultData('ipaddress'),
-            'riskLevel' => $this->resultData('ip_risklevelid');
-            'riskLevelMessage' => $this->resultData('ip_risklevel');
+            'riskLevel' => $this->resultData('ip_risklevelid'),
+            'riskLevelMessage' => $this->resultData('ip_risklevel'),
             'isp' => $this->resultData('ip_isp'),
             'country' => $this->resultData('ip_countryCode'),
             'region' => $this->resultData('ip_region'),
