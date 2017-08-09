@@ -187,6 +187,9 @@ class RiskResponse extends Message
      */
     public function ipInformation()
     {
+        $ipaddress = $this->resultData('ipaddress');
+        if (empty($ipaddress)) return [];
+        
         return [
             'ip' => $this->resultData('ipaddress'),
             'riskLevel' => $this->resultData('ip_risklevelid'),
