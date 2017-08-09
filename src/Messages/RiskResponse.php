@@ -167,7 +167,7 @@ class RiskResponse extends Message
             'domain' => [
                 'name' => $this->resultData('domainname'),
                 'age' => $this->resultData('domainAge'),
-                'category' => $this->resultData('domaincountryname'),
+                'category' => $this->resultData('domaincategory'),
                 'corporate' => $this->resultData('domaincorporate'),
                 'exists' => $this->resultData('domainExists'),
                 'company' => $this->resultData('domaincompany'),
