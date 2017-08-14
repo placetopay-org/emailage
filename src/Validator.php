@@ -84,7 +84,7 @@ class Validator
         $client = new Client();
 
         try {
-            $response = $client->request('POST', $url, [
+            $response = $client->post($url, [
                 'form_params' => $this->parseAdditional($additional),
                 'verify' => $this->verify_ssl,
             ]);
