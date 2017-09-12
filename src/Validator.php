@@ -84,8 +84,9 @@ class Validator
         $client = new Client();
 
         try {
+            $body = version_compare($client::VERSION, '6.0.0', '>=') ? 'form_params': 'body';
             $response = $client->post($url, [
-                'form_params' => $this->parseAdditional($additional),
+                $body => $this->parseAdditional($additional),
                 'verify' => $this->verify_ssl,
             ]);
             return $response->getBody()->getContents();
