@@ -61,7 +61,7 @@ abstract class Message
      */
     public function errorCode()
     {
-        return $this->errorCode;
+        return (int) $this->errorCode;
     }
 
     /**
