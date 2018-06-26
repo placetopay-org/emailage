@@ -14,7 +14,7 @@ class MockValidator extends Validator
         $data = explode('+', $email);
         $email = $data[0];
 
-        preg_match('/dnetix(\\d+)\\@yopmail.com/', $email, $matches);
+        preg_match('/\\w+_(\\d+)\\@\\w+\.com/', $email, $matches);
 
         if ($matches && isset($matches[1])) {
             return new RiskResponse(json_encode([
@@ -99,7 +99,7 @@ class MockValidator extends Validator
                             'status' => 'ValidDomain',
                             'country' => 'US',
                             'fraudRisk' => '500 Moderate',
-                            'EAScore' => 500,
+                            'EAScore' => 100,
                             'EAReason' => 'Limited History for Email',
                             'EAStatusID' => 4,
                             'EAReasonID' => 8,
