@@ -22,13 +22,21 @@ class Validator
      * @var string
      */
     protected $account;
+
     /**
      * API Token
      * @var string
      */
     protected $token;
 
+    /**
+     * @var bool
+     */
     protected $sandbox = false;
+
+    /**
+     * @var bool
+     */
     protected $verify_ssl = true;
 
     const FR_CARD_NOT_PRESENT_FRAUD = 1;
@@ -55,6 +63,9 @@ class Validator
         self::FR_SYSTEM_AUTO_REJECT => 'FR_SYSTEM_AUTO_REJECT',
     ];
 
+    /**
+     * @param array $settings
+     */
     public function __construct($settings)
     {
         $this->account = $settings['account'];
@@ -67,6 +78,12 @@ class Validator
             $this->verify_ssl = filter_var($settings['verify_ssl'], FILTER_VALIDATE_BOOLEAN);
     }
 
+    /**
+     * @param string $url
+     * @param array $parameters
+     * @param array $additional
+     * @return null|string
+     */
     private function execute($url, $parameters, $additional = [])
     {
         $auth = [
@@ -95,6 +112,11 @@ class Validator
         }
     }
 
+    /**
+     * @param string $url
+     * @param $auth
+     * @return string
+     */
     protected function signature($url, $auth)
     {
         $hash_Params = [];
@@ -107,7 +129,7 @@ class Validator
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @return array
      */
     public function parseAdditional($data)
@@ -167,14 +189,17 @@ class Validator
 
     /**
      * Cleans the last + if no ip provided
-     * @param $email
-     * @return mixed
+     * @param string $email
+     * @return string
      */
     protected function clearEmail($email)
     {
         return preg_replace('/\+$/', '', $email);
     }
 
+    /**
+     * @return string
+     */
     protected function getUrl()
     {
         if ($this->sandbox)
@@ -199,8 +224,8 @@ class Validator
     }
 
     /**
-     * @param $email
-     * @param $reason
+     * @param string $email
+     * @param string $reason
      * @param array $parameters
      * @return FlagResponse
      * @throws EmailageValidatorException
@@ -219,6 +244,11 @@ class Validator
         ], $parameters));
     }
 
+    /**
+     * @param string $email
+     * @param array $parameters
+     * @return FlagResponse
+     */
     public function flagGoodEmail($email, $parameters = [])
     {
         $url = $this->getUrl() . 'emailagevalidator/flag/';
