@@ -68,7 +68,6 @@ $additional = [
             'bin' => '411111',
         ],
     ],
-    'ipAddress' => '127.0.0.1',
     'userAgent' => 'Chrome XYZ',
 ];
 ```
