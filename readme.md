@@ -62,6 +62,12 @@ $additional = [
             ],
         ],
     ],
+    'instrument' => [
+        'card' => [
+            'number' => '9bbef19476623ca56c17da75fd57734dbf82530686043a6e491c6d71befe8f6e',
+            'bin' => '411111',
+        ],
+    ],
     'ipAddress' => '127.0.0.1',
     'userAgent' => 'Chrome XYZ',
 ];

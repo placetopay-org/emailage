@@ -101,9 +101,9 @@ class Validator
         $client = new Client();
 
         try {
-            $body = version_compare($client::VERSION, '6.0.0', '>=') ? 'form_params': 'body';
+            $body = version_compare($client::VERSION, '6.0.0', '>=') ? 'form_params' : 'body';
             $response = $client->post($url, [
-                $body => $this->parseAdditional($additional),
+                $body => $this->parseAdditional($parameters, $additional),
                 'verify' => $this->verify_ssl,
             ]);
             return $response->getBody()->getContents();
@@ -132,56 +132,74 @@ class Validator
      * @param array $data
      * @return array
      */
-    public function parseAdditional($data)
+    public function parseAdditional($parameters, $data)
     {
         $parsed = [];
+
+        $parameters = explode('+', $parameters['query']);
+        $parsed['EMAIL'] = $parameters[0];
+
+        if (isset($parameters[1])) {
+            $parsed['IP_ADDRESS'] = $parameters[1];
+        }
+
         if (isset($data['payer'])) {
             $payer = $data['payer'];
 
             $parsed = array_merge($parsed, [
-                'firstname' => isset($payer['name']) ? $payer['name'] : null,
-                'lastname' => isset($payer['surname']) ? $payer['surname'] : null,
-                'phone' => isset($payer['mobile']) ? $payer['mobile'] : null,
+                'FIRSTNAME' => isset($payer['name']) ? $payer['name'] : null,
+                'LASTNAME' => isset($payer['surname']) ? $payer['surname'] : null,
+                'PHONE' => isset($payer['mobile']) ? $payer['mobile'] : null,
             ]);
 
             if (isset($payer['address'])) {
                 $parsed = array_merge($parsed, [
-                    'billaddress' => isset($payer['address']['street']) ? $payer['address']['street'] : null,
-                    'billcity' => isset($payer['address']['city']) ? $payer['address']['city'] : null,
-                    'billregion' => isset($payer['address']['state']) ? $payer['address']['state'] : null,
-                    'billpostal' => isset($payer['address']['postalCode']) ? $payer['address']['postalCode'] : null,
-                    'billcountry' => isset($payer['address']['country']) ? $payer['address']['country'] : null,
+                    'BILLADDRESS' => isset($payer['address']['street']) ? $payer['address']['street'] : null,
+                    'BILLCITY' => isset($payer['address']['city']) ? $payer['address']['city'] : null,
+                    'BILLREGION' => isset($payer['address']['state']) ? $payer['address']['state'] : null,
+                    'BILLPOSTAL' => isset($payer['address']['postalCode']) ? $payer['address']['postalCode'] : null,
+                    'BILLCOUNTRY' => isset($payer['address']['country']) ? $payer['address']['country'] : null,
                 ]);
 
                 if (!isset($payer['mobile'])) {
-                    $parsed['phone'] = isset($payer['address']['phone']) ? $payer['address']['phone'] : null;
+                    $parsed['PHONE'] = isset($payer['address']['phone']) ? $payer['address']['phone'] : null;
                 }
             }
 
         }
+
         if (isset($data['payment'])) {
             $payment = $data['payment'];
 
             if (isset($payment['amount'])) {
                 $parsed = array_merge($parsed, [
-                    'transamount' => isset($payment['amount']['total']) ? $payment['amount']['total'] : null,
-                    'transcurrency' => isset($payment['amount']['currency']) ? $payment['amount']['currency'] : null,
+                    'TRANSAMOUNT' => isset($payment['amount']['total']) ? $payment['amount']['total'] : null,
+                    'TRANSCURRENCY' => isset($payment['amount']['currency']) ? $payment['amount']['currency'] : null,
                 ]);
             }
             if (isset($payment['shipping']) && isset($payment['shipping']['address'])) {
                 $shipping = $payment['shipping']['address'];
                 $parsed = array_merge($parsed, [
-                    'shipaddress' => isset($shipping['street']) ? $shipping['street'] : null,
-                    'shipcity' => isset($shipping['city']) ? $shipping['city'] : null,
-                    'shipregion' => isset($shipping['state']) ? $shipping['state'] : null,
-                    'shippostal' => isset($shipping['postalCode']) ? $shipping['postalCode'] : null,
-                    'shipcountry' => isset($shipping['country']) ? $shipping['country'] : null,
+                    'SHIPADDRESS' => isset($shipping['street']) ? $shipping['street'] : null,
+                    'SHIPCITY' => isset($shipping['city']) ? $shipping['city'] : null,
+                    'SHIPREGION' => isset($shipping['state']) ? $shipping['state'] : null,
+                    'SHIPPOSTAL' => isset($shipping['postalCode']) ? $shipping['postalCode'] : null,
+                    'SHIPCOUNTRY' => isset($shipping['country']) ? $shipping['country'] : null,
                 ]);
             }
         }
 
+        if (isset($data['instrument']) && isset($data['instrument']['card'])) {
+            if (isset($data['instrument']['card']['number'])){
+                $parsed['HASHEDCARDNUMBER'] = $data['instrument']['card']['number'];
+            }
+            if (isset($data['instrument']['card']['bin'])){
+                $parsed['CARDFIRSTSIX'] = $data['instrument']['card']['bin'];
+            }
+        }
+
         if (isset($data['userAgent'])) {
-            $parsed['useragent'] = $data['userAgent'];
+            $parsed['USERAGENT'] = $data['userAgent'];
         }
 
         return array_filter($parsed);
@@ -194,7 +212,7 @@ class Validator
      */
     protected function clearEmail($email)
     {
-        return preg_replace('/\+$/', '', $email);
+        return preg_replace('/\+$/', '', trim($email));
     }
 
     /**
@@ -218,9 +236,10 @@ class Validator
     {
         $url = $this->getUrl() . 'emailagevalidator/';
         $email = $this->clearEmail($email);
-        return new RiskResponse($this->execute($url, [
-            'query' => $email,
-        ], $parameters));
+
+        $response = $this->execute($url, ['query' => $email], $parameters);
+
+        return new RiskResponse($response);
     }
 
     /**
@@ -237,11 +256,14 @@ class Validator
 
         $url = $this->getUrl() . 'emailagevalidator/flag/';
         $email = $this->clearEmail($email);
-        return new FlagResponse($this->execute($url, [
+
+        $response = $this->execute($url, [
             'query' => $email,
             'flag' => 'fraud',
             'fraudcodeID' => $reason,
-        ], $parameters));
+        ], $parameters);
+
+        return new FlagResponse($response);
     }
 
     /**
@@ -253,10 +275,13 @@ class Validator
     {
         $url = $this->getUrl() . 'emailagevalidator/flag/';
         $email = $this->clearEmail($email);
-        return new FlagResponse($this->execute($url, [
+
+        $response = $this->execute($url, [
             'query' => $email,
             'flag' => 'good',
-        ], $parameters));
+        ], $parameters);
+
+        return new FlagResponse($response);
     }
 
 }
