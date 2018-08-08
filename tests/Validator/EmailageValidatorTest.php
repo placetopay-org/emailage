@@ -50,29 +50,38 @@ class EmailageValidatorTest extends BaseTestCase
                     ],
                 ],
             ],
+            'instrument' => [
+                'card' => [
+                    'number' => '9bbef19476623ca56c17da75fd57734dbf82530686043a6e491c6d71befe8f6e',
+                    'bin' => '411111',
+                ],
+            ],
             'ipAddress' => '127.0.0.1',
             'userAgent' => 'Chrome XYZ',
         ];
 
-        $parsed = $emailage->parseAdditional($data);
+        $parsed = $emailage->parseAdditional(['query' => 'maryse@gmail.com+'], $data);
 
         $this->assertEquals([
-            'firstname' => $data['payer']['name'],
-            'lastname' => $data['payer']['surname'],
-            'billaddress' => $data['payer']['address']['street'],
-            'billcity' => $data['payer']['address']['city'],
-            'billregion' => $data['payer']['address']['state'],
-            'billpostal' => $data['payer']['address']['postalCode'],
-            'billcountry' => $data['payer']['address']['country'],
-            'shipaddress' => $data['payment']['shipping']['address']['street'],
-            'shipcity' => $data['payment']['shipping']['address']['city'],
-            'shipregion' => $data['payment']['shipping']['address']['state'],
-            'shippostal' => $data['payment']['shipping']['address']['postalCode'],
-            'shipcountry' => $data['payment']['shipping']['address']['country'],
-            'phone' => $data['payer']['mobile'],
-            'transamount' => $data['payment']['amount']['total'],
-            'transcurrency' => $data['payment']['amount']['currency'],
-            'useragent' => $data['userAgent'],
+            'EMAIL' => 'maryse@gmail.com',
+            'FIRSTNAME' => $data['payer']['name'],
+            'LASTNAME' => $data['payer']['surname'],
+            'BILLADDRESS' => $data['payer']['address']['street'],
+            'BILLCITY' => $data['payer']['address']['city'],
+            'BILLREGION' => $data['payer']['address']['state'],
+            'BILLPOSTAL' => $data['payer']['address']['postalCode'],
+            'BILLCOUNTRY' => $data['payer']['address']['country'],
+            'SHIPADDRESS' => $data['payment']['shipping']['address']['street'],
+            'SHIPCITY' => $data['payment']['shipping']['address']['city'],
+            'SHIPREGION' => $data['payment']['shipping']['address']['state'],
+            'SHIPPOSTAL' => $data['payment']['shipping']['address']['postalCode'],
+            'SHIPCOUNTRY' => $data['payment']['shipping']['address']['country'],
+            'PHONE' => $data['payer']['mobile'],
+            'TRANSAMOUNT' => $data['payment']['amount']['total'],
+            'TRANSCURRENCY' => $data['payment']['amount']['currency'],
+            'USERAGENT' => $data['userAgent'],
+            'HASHEDCARDNUMBER' => $data['instrument']['card']['number'],
+            'CARDFIRSTSIX' => $data['instrument']['card']['bin'],
         ], $parsed);
     }
 
@@ -110,19 +119,20 @@ class EmailageValidatorTest extends BaseTestCase
             'userAgent' => 'Chrome XYZ',
         ];
 
-        $parsed = $emailage->parseAdditional($data);
+        $parsed = $emailage->parseAdditional(['query' => 'maryse@gmail.com+'], $data);
 
         $this->assertEquals([
-            'firstname' => $data['payer']['name'],
-            'lastname' => $data['payer']['surname'],
-            'billaddress' => $data['payer']['address']['street'],
-            'billcity' => $data['payer']['address']['city'],
-            'billregion' => $data['payer']['address']['state'],
-            'billcountry' => $data['payer']['address']['country'],
-            'phone' => $data['payer']['address']['phone'],
-            'transamount' => $data['payment']['amount']['total'],
-            'transcurrency' => $data['payment']['amount']['currency'],
-            'useragent' => $data['userAgent'],
+            'EMAIL' => 'maryse@gmail.com',
+            'FIRSTNAME' => $data['payer']['name'],
+            'LASTNAME' => $data['payer']['surname'],
+            'BILLADDRESS' => $data['payer']['address']['street'],
+            'BILLCITY' => $data['payer']['address']['city'],
+            'BILLREGION' => $data['payer']['address']['state'],
+            'BILLCOUNTRY' => $data['payer']['address']['country'],
+            'PHONE' => $data['payer']['address']['phone'],
+            'TRANSAMOUNT' => $data['payment']['amount']['total'],
+            'TRANSCURRENCY' => $data['payment']['amount']['currency'],
+            'USERAGENT' => $data['userAgent'],
         ], $parsed);
     }
 }

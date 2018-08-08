@@ -48,6 +48,8 @@ class ResponseTest extends BaseTestCase
             'city' => '',
             'latitude' => '',
             'longitude' => '',
+            'riskLevel' => '3',
+            'riskLevelMessage' => 'Moderate'
         ], $riskResponse->ipInformation());
     }
 
@@ -77,6 +79,8 @@ class ResponseTest extends BaseTestCase
             'city' => '',
             'latitude' => '',
             'longitude' => '',
+            'riskLevel' => '3',
+            'riskLevelMessage' => 'Moderate'
         ], $riskResponse->ipInformation());
     }
 
