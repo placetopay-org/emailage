@@ -1,32 +1,35 @@
 {
-    "name": "placetopay/emailage",
-    "description": "SDK to connect with Emailage service",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Diego Calle",
-            "email": "dnetix@gmail.com"
-        }
-    ],
-    "archive": {
-        "exclude": [".git", ".gitignore"]
-    },
-    "autoload": {
-        "psr-4": {
-            "PlacetoPay\\Emailage\\": "src/"
-        }
-    },
-    "require": {
-        "guzzlehttp/guzzle": "~5.3.1|~6.0",
-        "psr/log": "^1.1"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^5.7"
-    },
-    "autoload-dev": {
-        "classmap": [
-            "tests/"
-        ]
+  "name": "placetopay/emailage",
+  "description": "SDK to connect with Emailage service",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Diego Calle",
+      "email": "dnetix@gmail.com"
     }
+  ],
+  "archive": {
+    "exclude": [
+      ".git",
+      ".gitignore"
+    ]
+  },
+  "autoload": {
+    "psr-4": {
+      "PlacetoPay\\Emailage\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "classmap": [
+      "tests/"
+    ]
+  },
+  "require": {
+    "guzzlehttp/guzzle": "~5.3.1|~6.0",
+    "psr/log": "^1.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.4"
+  }
 }

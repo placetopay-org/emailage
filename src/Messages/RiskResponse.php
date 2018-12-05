@@ -19,8 +19,9 @@ class RiskResponse extends Message
 
     protected function resultData($key)
     {
-        if (isset($this->result[$key]))
+        if (isset($this->result[$key])) {
             return $this->result[$key];
+        }
         return null;
     }
 
@@ -188,8 +189,10 @@ class RiskResponse extends Message
     public function ipInformation()
     {
         $ipaddress = $this->resultData('ipaddress');
-        if (empty($ipaddress)) return [];
-        
+        if (empty($ipaddress)) {
+            return [];
+        }
+
         return [
             'ip' => $this->resultData('ipaddress'),
             'riskLevel' => $this->resultData('ip_risklevelid'),

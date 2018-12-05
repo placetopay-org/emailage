@@ -1,6 +1,5 @@
 <?php
 
-
 class ResponseTest extends BaseTestCase
 {
 

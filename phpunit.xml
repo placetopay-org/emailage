@@ -9,8 +9,8 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Library Test Suite">
-            <directory suffix="Test.php">./tests</directory>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
     </testsuites>
     <filter>
@@ -24,6 +24,6 @@
         <env name="EMAILAGE_" value="false"/>
     </php>
     <logging>
-        <log type="coverage-html" target="./tests/coverage" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highUpperBound="80"></log>
+        <log type="coverage-html" target="./tests/coverage"></log>
     </logging>
 </phpunit>

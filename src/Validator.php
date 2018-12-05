@@ -39,6 +39,10 @@ class Validator
      */
     protected $verify_ssl = true;
 
+    protected $client;
+
+    protected $logger;
+
     const FR_CARD_NOT_PRESENT_FRAUD = 1;
     const FR_CUSTOMER_DISPUTE = 2;
     const FR_FIRST_PARTY_FRAUD = 3;
@@ -71,11 +75,19 @@ class Validator
         $this->account = $settings['account'];
         $this->token = $settings['token'];
 
-        if (isset($settings['sandbox']))
+        if (isset($settings['sandbox'])) {
             $this->sandbox = filter_var($settings['sandbox'], FILTER_VALIDATE_BOOLEAN);
+        }
 
-        if (isset($settings['verify_ssl']))
+        if (isset($settings['verify_ssl'])) {
             $this->verify_ssl = filter_var($settings['verify_ssl'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if (isset($settings['client'])) {
+            $this->client = $settings['client'];
+        } else {
+            $this->client = new Client();
+        }
     }
 
     /**
@@ -98,11 +110,9 @@ class Validator
 
         $url .= '?' . http_build_query(array_merge($auth, $parameters));
 
-        $client = new Client();
-
         try {
-            $body = version_compare($client::VERSION, '6.0.0', '>=') ? 'form_params' : 'body';
-            $response = $client->post($url, [
+            $body = version_compare($this->client::VERSION, '6.0.0', '>=') ? 'form_params' : 'body';
+            $response = $this->client->post($url, [
                 $body => $this->parseAdditional($parameters, $additional),
                 'verify' => $this->verify_ssl,
             ]);
@@ -137,10 +147,20 @@ class Validator
         $parsed = [];
 
         $parameters = explode('+', $parameters['query']);
-        $parsed['EMAIL'] = $parameters[0];
 
         if (isset($parameters[1])) {
+            $parsed['EMAIL'] = $parameters[0];
             $parsed['IP_ADDRESS'] = $parameters[1];
+        } else {
+            if (filter_var($parameters[0], FILTER_VALIDATE_IP)) {
+                $parsed['IP_ADDRESS'] = $parameters[0];
+            } else {
+                $parsed['EMAIL'] = $parameters[0];
+            }
+        }
+
+        if (isset($data['ipAddress'])) {
+            $parsed['IP_ADDRESS'] = $data['ipAddress'];
         }
 
         if (isset($data['payer'])) {
@@ -190,10 +210,10 @@ class Validator
         }
 
         if (isset($data['instrument']) && isset($data['instrument']['card'])) {
-            if (isset($data['instrument']['card']['number'])){
+            if (isset($data['instrument']['card']['number'])) {
                 $parsed['HASHEDCARDNUMBER'] = $data['instrument']['card']['number'];
             }
-            if (isset($data['instrument']['card']['bin'])){
+            if (isset($data['instrument']['card']['bin'])) {
                 $parsed['CARDFIRSTSIX'] = $data['instrument']['card']['bin'];
             }
         }
@@ -220,8 +240,9 @@ class Validator
      */
     protected function getUrl()
     {
-        if ($this->sandbox)
+        if ($this->sandbox) {
             return $this->sandboxUrl;
+        }
 
         return $this->apiUrl;
     }
@@ -251,8 +272,9 @@ class Validator
      */
     public function flagFraudEmail($email, $reason, $parameters = [])
     {
-        if (!array_key_exists($reason, self::$FRAUD_REASONS))
+        if (!array_key_exists($reason, self::$FRAUD_REASONS)) {
             throw new EmailageValidatorException('Invalid reason for fraud provided');
+        }
 
         $url = $this->getUrl() . 'emailagevalidator/flag/';
         $email = $this->clearEmail($email);
