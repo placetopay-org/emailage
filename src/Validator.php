@@ -170,6 +170,7 @@ class Validator
                 'firstname' => isset($payer['name']) ? $payer['name'] : null,
                 'lastname' => isset($payer['surname']) ? $payer['surname'] : null,
                 'phone' => isset($payer['mobile']) ? $payer['mobile'] : null,
+                'customerid' => isset($payer['document']) ? $payer['document'] : null,
             ]);
 
             if (isset($payer['address'])) {
@@ -190,6 +191,10 @@ class Validator
 
         if (isset($data['payment'])) {
             $payment = $data['payment'];
+
+            $parsed = array_merge($parsed, [
+                'urid' => isset($payment['reference']) ? $payment['reference'] : null,
+            ]);
 
             if (isset($payment['amount'])) {
                 $parsed = array_merge($parsed, [
