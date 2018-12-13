@@ -82,7 +82,7 @@ class EmailageValidatorTest extends BaseTestCase
             'USERAGENT' => $data['userAgent'],
             'HASHEDCARDNUMBER' => $data['instrument']['card']['number'],
             'CARDFIRSTSIX' => $data['instrument']['card']['bin'],
-            'IP_ADDRESS' => $data['ipAddress'],
+            'IP' => $data['ipAddress'],
         ], $parsed);
     }
 
@@ -134,7 +134,7 @@ class EmailageValidatorTest extends BaseTestCase
             'TRANSAMOUNT' => $data['payment']['amount']['total'],
             'TRANSCURRENCY' => $data['payment']['amount']['currency'],
             'USERAGENT' => $data['userAgent'],
-            'IP_ADDRESS' => $data['ipAddress'],
+            'IP' => $data['ipAddress'],
         ], $parsed);
     }
 
@@ -215,7 +215,7 @@ class EmailageValidatorTest extends BaseTestCase
             'USERAGENT' => $data['userAgent'],
             'HASHEDCARDNUMBER' => $data['instrument']['card']['number'],
             'CARDFIRSTSIX' => $data['instrument']['card']['bin'],
-            'IP_ADDRESS' => '127.0.0.1',
+            'IP' => '127.0.0.1',
         ], $parsed);
     }
 }

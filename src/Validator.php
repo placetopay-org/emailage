@@ -150,17 +150,17 @@ class Validator
 
         if (isset($parameters[1])) {
             $parsed['EMAIL'] = $parameters[0];
-            $parsed['IP_ADDRESS'] = $parameters[1];
+            $parsed['IP'] = $parameters[1];
         } else {
             if (filter_var($parameters[0], FILTER_VALIDATE_IP)) {
-                $parsed['IP_ADDRESS'] = $parameters[0];
+                $parsed['IP'] = $parameters[0];
             } else {
                 $parsed['EMAIL'] = $parameters[0];
             }
         }
 
         if (isset($data['ipAddress'])) {
-            $parsed['IP_ADDRESS'] = $data['ipAddress'];
+            $parsed['IP'] = $data['ipAddress'];
         }
 
         if (isset($data['payer'])) {
