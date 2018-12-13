@@ -149,40 +149,40 @@ class Validator
         $parameters = explode('+', $parameters['query']);
 
         if (isset($parameters[1])) {
-            $parsed['EMAIL'] = $parameters[0];
-            $parsed['IP'] = $parameters[1];
+            $parsed['email'] = $parameters[0];
+            $parsed['ip'] = $parameters[1];
         } else {
             if (filter_var($parameters[0], FILTER_VALIDATE_IP)) {
-                $parsed['IP'] = $parameters[0];
+                $parsed['ip'] = $parameters[0];
             } else {
-                $parsed['EMAIL'] = $parameters[0];
+                $parsed['email'] = $parameters[0];
             }
         }
 
         if (isset($data['ipAddress'])) {
-            $parsed['IP'] = $data['ipAddress'];
+            $parsed['ip'] = $data['ipAddress'];
         }
 
         if (isset($data['payer'])) {
             $payer = $data['payer'];
 
             $parsed = array_merge($parsed, [
-                'FIRSTNAME' => isset($payer['name']) ? $payer['name'] : null,
-                'LASTNAME' => isset($payer['surname']) ? $payer['surname'] : null,
-                'PHONE' => isset($payer['mobile']) ? $payer['mobile'] : null,
+                'firstname' => isset($payer['name']) ? $payer['name'] : null,
+                'lastname' => isset($payer['surname']) ? $payer['surname'] : null,
+                'phone' => isset($payer['mobile']) ? $payer['mobile'] : null,
             ]);
 
             if (isset($payer['address'])) {
                 $parsed = array_merge($parsed, [
-                    'BILLADDRESS' => isset($payer['address']['street']) ? $payer['address']['street'] : null,
-                    'BILLCITY' => isset($payer['address']['city']) ? $payer['address']['city'] : null,
-                    'BILLREGION' => isset($payer['address']['state']) ? $payer['address']['state'] : null,
-                    'BILLPOSTAL' => isset($payer['address']['postalCode']) ? $payer['address']['postalCode'] : null,
-                    'BILLCOUNTRY' => isset($payer['address']['country']) ? $payer['address']['country'] : null,
+                    'billaddress' => isset($payer['address']['street']) ? $payer['address']['street'] : null,
+                    'billcity' => isset($payer['address']['city']) ? $payer['address']['city'] : null,
+                    'billregion' => isset($payer['address']['state']) ? $payer['address']['state'] : null,
+                    'billpostal' => isset($payer['address']['postalCode']) ? $payer['address']['postalCode'] : null,
+                    'billcountry' => isset($payer['address']['country']) ? $payer['address']['country'] : null,
                 ]);
 
                 if (!isset($payer['mobile'])) {
-                    $parsed['PHONE'] = isset($payer['address']['phone']) ? $payer['address']['phone'] : null;
+                    $parsed['phone'] = isset($payer['address']['phone']) ? $payer['address']['phone'] : null;
                 }
             }
 
@@ -193,33 +193,33 @@ class Validator
 
             if (isset($payment['amount'])) {
                 $parsed = array_merge($parsed, [
-                    'TRANSAMOUNT' => isset($payment['amount']['total']) ? $payment['amount']['total'] : null,
-                    'TRANSCURRENCY' => isset($payment['amount']['currency']) ? $payment['amount']['currency'] : null,
+                    'transamount' => isset($payment['amount']['total']) ? $payment['amount']['total'] : null,
+                    'transcurrency' => isset($payment['amount']['currency']) ? $payment['amount']['currency'] : null,
                 ]);
             }
             if (isset($payment['shipping']) && isset($payment['shipping']['address'])) {
                 $shipping = $payment['shipping']['address'];
                 $parsed = array_merge($parsed, [
-                    'SHIPADDRESS' => isset($shipping['street']) ? $shipping['street'] : null,
-                    'SHIPCITY' => isset($shipping['city']) ? $shipping['city'] : null,
-                    'SHIPREGION' => isset($shipping['state']) ? $shipping['state'] : null,
-                    'SHIPPOSTAL' => isset($shipping['postalCode']) ? $shipping['postalCode'] : null,
-                    'SHIPCOUNTRY' => isset($shipping['country']) ? $shipping['country'] : null,
+                    'shipaddress' => isset($shipping['street']) ? $shipping['street'] : null,
+                    'shipcity' => isset($shipping['city']) ? $shipping['city'] : null,
+                    'shipregion' => isset($shipping['state']) ? $shipping['state'] : null,
+                    'shippostal' => isset($shipping['postalCode']) ? $shipping['postalCode'] : null,
+                    'shipcountry' => isset($shipping['country']) ? $shipping['country'] : null,
                 ]);
             }
         }
 
         if (isset($data['instrument']) && isset($data['instrument']['card'])) {
             if (isset($data['instrument']['card']['number'])) {
-                $parsed['HASHEDCARDNUMBER'] = $data['instrument']['card']['number'];
+                $parsed['hashedcardnumber'] = $data['instrument']['card']['number'];
             }
             if (isset($data['instrument']['card']['bin'])) {
-                $parsed['CARDFIRSTSIX'] = $data['instrument']['card']['bin'];
+                $parsed['cardfirstsix'] = $data['instrument']['card']['bin'];
             }
         }
 
         if (isset($data['userAgent'])) {
-            $parsed['USERAGENT'] = $data['userAgent'];
+            $parsed['useragent'] = $data['userAgent'];
         }
 
         return array_filter($parsed);
