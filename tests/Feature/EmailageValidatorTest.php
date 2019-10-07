@@ -58,7 +58,7 @@ class EmailageValidatorTest extends BaseTestCase
             ],
             'ipAddress' => '127.0.0.1',
             'userAgent' => 'Chrome XYZ',
-            'user_email' => 'user@example.com',
+            'userEmail' => 'user@example.com',
         ];
 
         $parsed = $emailage->parseAdditional(['query' => 'maryse@gmail.com+'], $data);
@@ -83,7 +83,7 @@ class EmailageValidatorTest extends BaseTestCase
             'transamount' => $data['payment']['amount']['total'],
             'transcurrency' => $data['payment']['amount']['currency'],
             'useragent' => $data['userAgent'],
-            'user_email' => $data['user_email'],
+            'user_email' => $data['userEmail'],
             'hashedcardnumber' => $data['instrument']['card']['number'],
             'cardfirstsix' => $data['instrument']['card']['bin'],
             'ip' => $data['ipAddress'],
@@ -122,7 +122,7 @@ class EmailageValidatorTest extends BaseTestCase
             ],
             'ipAddress' => '127.0.0.1',
             'userAgent' => 'Chrome XYZ',
-            'user_email' => 'user@example.com',
+            'userEmail' => 'user@example.com',
         ];
 
         $parsed = $emailage->parseAdditional(['query' => 'maryse@gmail.com+'], $data);
@@ -141,7 +141,7 @@ class EmailageValidatorTest extends BaseTestCase
             'transamount' => $data['payment']['amount']['total'],
             'transcurrency' => $data['payment']['amount']['currency'],
             'useragent' => $data['userAgent'],
-            'user_email' => $data['user_email'],
+            'user_email' => $data['userEmail'],
             'ip' => $data['ipAddress'],
         ], $parsed);
     }
@@ -199,7 +199,7 @@ class EmailageValidatorTest extends BaseTestCase
                 ],
             ],
             'userAgent' => 'Chrome XYZ',
-            'user_email' => 'user@example.com',
+            'userEmail' => 'user@example.com',
         ];
 
         $parsed = $emailage->parseAdditional(['query' => 'maryse@gmail.com+127.0.0.1'], $data);
@@ -224,7 +224,7 @@ class EmailageValidatorTest extends BaseTestCase
             'transamount' => $data['payment']['amount']['total'],
             'transcurrency' => $data['payment']['amount']['currency'],
             'useragent' => $data['userAgent'],
-            'user_email' => $data['user_email'],
+            'user_email' => $data['userEmail'],
             'hashedcardnumber' => $data['instrument']['card']['number'],
             'cardfirstsix' => $data['instrument']['card']['bin'],
             'ip' => '127.0.0.1',
