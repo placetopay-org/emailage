@@ -227,6 +227,10 @@ class Validator
             $parsed['useragent'] = $data['userAgent'];
         }
 
+        if (isset($data['user_email'])) {
+            $parsed['user_email'] = $data['user_email'];
+        }
+
         return array_filter($parsed);
     }
 
