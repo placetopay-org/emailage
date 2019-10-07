@@ -146,7 +146,8 @@ class Validator
     {
         $parsed = [];
 
-        $parameters = explode('+', $parameters['query']);
+        // Make sure to handle an email with a '+' in it, always taking the last part
+        $parameters = preg_split('/\+(?=[^+]*$)/', $parameters['query']);
 
         if (isset($parameters[1])) {
             $parsed['email'] = $parameters[0];
