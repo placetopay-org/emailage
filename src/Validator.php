@@ -3,7 +3,6 @@
 namespace PlacetoPay\Emailage;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use PlacetoPay\Emailage\Exceptions\EmailageValidatorException;
 use PlacetoPay\Emailage\Messages\FlagResponse;
 use PlacetoPay\Emailage\Messages\RiskResponse;
@@ -117,15 +116,11 @@ class Validator
 
         $url .= '?' . http_build_query(array_merge($auth, $parameters));
 
-        try {
-            $response = $this->client->post($url, [
-                'form_params' => $this->parseAdditional($parameters, $additional),
-                'verify' => $this->verify_ssl,
-            ]);
-            return $response->getBody()->getContents();
-        } catch (BadResponseException $e) {
-            return null;
-        }
+        $response = $this->client->post($url, [
+            'form_params' => $this->parseAdditional($parameters, $additional),
+            'verify' => $this->verify_ssl,
+        ]);
+        return $response->getBody()->getContents();
     }
 
     /**
