@@ -140,7 +140,7 @@ class Validator
      * @param array $data
      * @return array
      */
-    public function parseAdditional($parameters, $data)
+    protected function parseAdditional($parameters, $data)
     {
         $parsed = [];
 
