@@ -37,6 +37,9 @@ class Validator
      */
     protected $verify_ssl = true;
 
+    /**
+     * @var Client
+     */
     protected $client;
 
     protected $logger;
@@ -65,10 +68,14 @@ class Validator
         self::FR_SYSTEM_AUTO_REJECT => 'FR_SYSTEM_AUTO_REJECT',
     ];
 
-    /**
-     * @param array $settings
-     */
-    public function __construct($settings)
+    public function __construct(array $settings = [])
+    {
+        if ($settings) {
+            $this->setSettings($settings);
+        }
+    }
+
+    public function setSettings(array $settings): self
     {
         $this->account = $settings['account'];
         $this->token = $settings['token'];
@@ -86,6 +93,8 @@ class Validator
         } else {
             $this->client = new Client();
         }
+
+        return $this;
     }
 
     /**
