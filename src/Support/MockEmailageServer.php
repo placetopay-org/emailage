@@ -85,9 +85,15 @@ class MockEmailageServer
 
     protected function successfulResponse(): array
     {
+        $email = $this->parameters('email');
+
+        preg_match('/\\w+_(\\d+)\\@(\\w+\.\\w+)/', $email, $matches);
+        $risk = $matches[1] ?? 0;
+        $domain = $matches[2] ?? 'gmail.com';
+
         return [
             'query' => [
-                'email' => $this->parameters('email'),
+                'email' => $email,
                 'queryType' => 'EmailAgeVerification',
                 'count' => 1,
                 'created' => gmdate('Y-m-dTH:i:sZ'),
@@ -95,7 +101,7 @@ class MockEmailageServer
                 'responseCount' => 1,
                 'results' => [
                     [
-                        'email' => $this->parameters('email'),
+                        'email' => $email,
                         'eName' => $this->parameters('firstname') . ' ' . $this->parameters('lastname'),
                         'emailAge' => '',
                         'email_creation_days' => '',
@@ -107,7 +113,7 @@ class MockEmailageServer
                         'status' => 'Verified',
                         'country' => 'US',
                         'fraudRisk' => '071 Very Low',
-                        'EAScore' => '71',
+                        'EAScore' => $risk,
                         'EAReason' => 'Email Created at least 9.9 Years Ago',
                         'EAStatusID' => '2',
                         'EAReasonID' => '14',
@@ -129,7 +135,7 @@ class MockEmailageServer
                         'domainExists' => 'Yes',
                         'company' => '',
                         'title' => '',
-                        'domainname' => 'gmail.com',
+                        'domainname' => $domain,
                         'domaincompany' => 'Google',
                         'domaincountryname' => 'United States',
                         'domaincategory' => 'Webmail',
