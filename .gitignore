@@ -4,3 +4,5 @@ tests/coverage
 vendor
 packages
 auth.json
+.DS_Store
+.phpunit.result.cache
