@@ -1,9 +1,7 @@
 <?php
 
-
 class EmailageValidatorTest extends BaseTestCase
 {
-
     public function testItParsesTheAdditionalInformationCorrectly()
     {
         $emailage = new \PlacetoPay\Emailage\Validator([

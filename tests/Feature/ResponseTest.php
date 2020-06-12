@@ -2,7 +2,6 @@
 
 class ResponseTest extends BaseTestCase
 {
-
     public function testItParsesABasicResponse()
     {
         $result = $this->unserialize('czoxMjUwOiLvu797InF1ZXJ5Ijp7ImVtYWlsIjoicHJ1ZWJhc3AycDIwMTYlNDBnbWFpbC5jb20iLCJxdWVyeVR5cGUiOiJFbWFpbEFnZVZlcmlmaWNhdGlvbiIsImNvdW50IjoxLCJjcmVhdGVkIjoiMjAxNy0wNi0wOVQyMzo1ODoyNloiLCJsYW5nIjoiZW4tVVMiLCJyZXNwb25zZUNvdW50IjoxLCJyZXN1bHRzIjpbeyJlbWFpbCI6InBydWViYXNwMnAyMDE2JTQwZ21haWwuY29tIiwiZU5hbWUiOiIiLCJlbWFpbEFnZSI6IiIsImRvbWFpbkFnZSI6IjE5OTUtMDgtMTNUMDc6MDA6MDBaIiwiZmlyc3RWZXJpZmljYXRpb25EYXRlIjoiMjAxNy0wNi0wOVQyMzo1ODoyNloiLCJsYXN0VmVyaWZpY2F0aW9uRGF0ZSI6IjIwMTctMDYtMDlUMjM6NTg6MjZaIiwic3RhdHVzIjoiVmFsaWREb21haW4iLCJjb3VudHJ5IjoiVVMiLCJmcmF1ZFJpc2siOiI1MDAgTW9kZXJhdGUiLCJFQVNjb3JlIjoiNTAwIiwiRUFSZWFzb24iOiJMaW1pdGVkIEhpc3RvcnkgZm9yIEVtYWlsIiwiRUFTdGF0dXNJRCI6IjQiLCJFQVJlYXNvbklEIjoiOCIsIkVBQWR2aWNlSUQiOiI0IiwiRUFBZHZpY2UiOiJNb2RlcmF0ZSBGcmF1ZCBSaXNrIiwiRUFSaXNrQmFuZElEIjoiMyIsIkVBUmlza0JhbmQiOiJGcmF1ZCBTY29yZSAzMDEgdG8gNjAwIiwic291cmNlX2luZHVzdHJ5IjoiIiwiZnJhdWRfdHlwZSI6IiIsImxhc3RmbGFnZ2Vkb24iOiIiLCJkb2IiOiIiLCJnZW5kZXIiOiIiLCJsb2NhdGlvbiI6IiIsInNtZnJpZW5kcyI6IiIsInRvdGFsaGl0cyI6IjEiLCJ1bmlxdWVoaXRzIjoiMSIsImltYWdldXJsIjoiIiwiZW1haWxFeGlzdHMiOiJOb3QgU3VyZSIsImRvbWFpbkV4aXN0cyI6IlllcyIsImNvbXBhbnkiOiIiLCJ0aXRsZSI6IiIsImRvbWFpbm5hbWUiOiJnbWFpbC5jb20iLCJkb21haW5jb21wYW55IjoiR29vZ2xlIiwiZG9tYWluY291bnRyeW5hbWUiOiJVbml0ZWQrU3RhdGVzIiwiZG9tYWluY2F0ZWdvcnkiOiJXZWJtYWlsIiwiZG9tYWluY29ycG9yYXRlIjoiTm8iLCJkb21haW5yaXNrbGV2ZWwiOiJNb2RlcmF0ZSIsImRvbWFpbnJlbGV2YW50aW5mbyI6IlZhbGlkIFdlYm1haWwgRG9tYWluIGZyb20gVW5pdGVkIFN0YXRlcyIsImRvbWFpbnJpc2tsZXZlbElEIjoiMyIsImRvbWFpbnJlbGV2YW50aW5mb0lEIjoiNTA4Iiwic21saW5rcyI6W10sInBob25lX3N0YXR1cyI6IiIsInNoaXBmb3J3YXJkIjoiIn1dfSwicmVzcG9uc2VTdGF0dXMiOnsic3RhdHVzIjoic3VjY2VzcyIsImVycm9yQ29kZSI6IjAiLCJkZXNjcmlwdGlvbiI6IiJ9fSI7');
@@ -48,7 +47,7 @@ class ResponseTest extends BaseTestCase
             'latitude' => '',
             'longitude' => '',
             'riskLevel' => '3',
-            'riskLevelMessage' => 'Moderate'
+            'riskLevelMessage' => 'Moderate',
         ], $riskResponse->ipInformation());
     }
 
@@ -79,7 +78,7 @@ class ResponseTest extends BaseTestCase
             'latitude' => '',
             'longitude' => '',
             'riskLevel' => '3',
-            'riskLevelMessage' => 'Moderate'
+            'riskLevelMessage' => 'Moderate',
         ], $riskResponse->ipInformation());
     }
 

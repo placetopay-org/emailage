@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PlacetoPay\Emailage\Messages;
-
 
 class RiskResponse extends Message
 {
@@ -12,7 +10,7 @@ class RiskResponse extends Message
     {
         parent::__construct($result);
 
-        if (isset($this->query['results']) && is_array($this->query['results']) && sizeof($this->query['results']) > 0) {
+        if (isset($this->query['results']) && is_array($this->query['results']) && count($this->query['results']) > 0) {
             $this->result = $this->query['results'][0];
         }
     }
@@ -26,7 +24,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Calculated Score by the Emailage proprietary algorithm
+     * Calculated Score by the Emailage proprietary algorithm.
      * @return int
      */
     public function score()
@@ -35,7 +33,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Returns a code that provides additional information to understand the score
+     * Returns a code that provides additional information to understand the score.
      * @return int
      */
     public function riskReason()
@@ -44,7 +42,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Returns a translation for humans of the reason code
+     * Returns a translation for humans of the reason code.
      * @return string
      */
     public function riskReasonMessage()
@@ -59,7 +57,7 @@ class RiskResponse extends Message
      *  2 - Verified
      *  3 - EmailNonxistent
      *  4 - ValidDomain
-     *  5 - DomainInexistent
+     *  5 - DomainInexistent.
      * @return int
      */
     public function riskStatus()
@@ -68,7 +66,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Serves as a guideline based on the risk associated with the email address
+     * Serves as a guideline based on the risk associated with the email address.
      * @return int
      */
     public function riskAdvice()
@@ -77,7 +75,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Parses for humans the advice code
+     * Parses for humans the advice code.
      * @return string
      */
     public function riskAdviceMessage()
@@ -86,7 +84,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Customized risk level band according to the configuration provided on Emailage administration
+     * Customized risk level band according to the configuration provided on Emailage administration.
      * @return int
      */
     public function riskBand()
@@ -95,7 +93,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Provides the fraud risk for the IP Address, the values for this field are
+     * Provides the fraud risk for the IP Address, the values for this field are.
      * @deprecated
      *  1 - Very High
      *  2 - High
@@ -122,7 +120,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Industry that reports the data
+     * Industry that reports the data.
      * @return string
      */
     public function sourceIndustry()
@@ -131,7 +129,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Industry that reports the data
+     * Industry that reports the data.
      * @return string
      */
     public function lastFlaggedOn()
@@ -140,7 +138,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Define fraud type
+     * Define fraud type.
      * @return string
      */
     public function fraudType()
@@ -149,7 +147,7 @@ class RiskResponse extends Message
     }
 
     /**
-     * Groups information about the email
+     * Groups information about the email.
      * @return array
      */
     public function emailInformation()
@@ -178,12 +176,12 @@ class RiskResponse extends Message
                 'relevantInfo' => $this->resultData('domainrelevantinfoID'),
                 'relevantInfoMessage' => $this->resultData('domainrelevantinfo'),
 
-            ]
+            ],
         ];
     }
 
     /**
-     * Groups information about the IP address
+     * Groups information about the IP address.
      * @return array
      */
     public function ipInformation()
@@ -205,5 +203,4 @@ class RiskResponse extends Message
             'longitude' => $this->resultData('ip_longitude'),
         ];
     }
-
 }

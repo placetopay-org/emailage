@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PlacetoPay\Emailage;
-
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
@@ -18,13 +16,13 @@ class Validator
     protected $signatureMethod = 'sha256';
 
     /**
-     * Account SID
+     * Account SID.
      * @var string
      */
     protected $account;
 
     /**
-     * API Token
+     * API Token.
      * @var string
      */
     protected $token;
@@ -135,7 +133,7 @@ class Validator
         $hash_Params[] = urlencode(http_build_query($auth));
 
         // Make and return the Hash.
-        return base64_encode(hash_hmac(strtolower($this->signatureMethod), join('&', $hash_Params), $this->token . '&', TRUE));
+        return base64_encode(hash_hmac(strtolower($this->signatureMethod), implode('&', $hash_Params), $this->token . '&', true));
     }
 
     /**
@@ -187,7 +185,6 @@ class Validator
                     $parsed['phone'] = isset($payer['address']['phone']) ? $payer['address']['phone'] : null;
                 }
             }
-
         }
 
         if (isset($data['payment'])) {
@@ -236,7 +233,7 @@ class Validator
     }
 
     /**
-     * Cleans the last + if no ip provided
+     * Cleans the last + if no ip provided.
      * @param string $email
      * @return string
      */
@@ -258,7 +255,7 @@ class Validator
     }
 
     /**
-     * Receives a email, ip or email+ip information and returns a validation response
+     * Receives a email, ip or email+ip information and returns a validation response.
      * @param string $email
      * @param array $parameters
      * @return RiskResponse
@@ -315,5 +312,4 @@ class Validator
 
         return new FlagResponse($response);
     }
-
 }

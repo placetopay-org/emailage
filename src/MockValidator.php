@@ -1,14 +1,11 @@
 <?php
 
-
 namespace PlacetoPay\Emailage;
-
 
 use PlacetoPay\Emailage\Messages\RiskResponse;
 
 class MockValidator extends Validator
 {
-
     public function query($email, $parameters = [])
     {
         $data = explode('+', $email);
@@ -69,15 +66,15 @@ class MockValidator extends Validator
                             'domainrelevantinfoID' => '508',
                             'smlinks' => [],
                             'phone_status' => '',
-                            'shipforward' => ''
-                        ]
-                    ]
+                            'shipforward' => '',
+                        ],
+                    ],
                 ],
                 'responseStatus' => [
                     'status' => 'success',
                     'errorCode' => '0',
-                    'description' => ''
-                ]
+                    'description' => '',
+                ],
             ]));
         } else {
             return new RiskResponse(json_encode([
@@ -132,17 +129,16 @@ class MockValidator extends Validator
                             'domainrelevantinfoID' => '508',
                             'smlinks' => [],
                             'phone_status' => '',
-                            'shipforward' => ''
-                        ]
-                    ]
+                            'shipforward' => '',
+                        ],
+                    ],
                 ],
                 'responseStatus' => [
                     'status' => 'success',
                     'errorCode' => '0',
-                    'description' => ''
-                ]
+                    'description' => '',
+                ],
             ]));
         }
     }
-
 }
