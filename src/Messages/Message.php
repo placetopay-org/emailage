@@ -1,35 +1,36 @@
 <?php
 
-
 namespace PlacetoPay\Emailage\Messages;
-
 
 use PlacetoPay\Emailage\Exceptions\EmailageValidatorException;
 
 abstract class Message
 {
-
     protected $errorCode;
     protected $errorMessage;
     protected $query;
     protected $type;
 
-    public function __construct($result)
+    public function __construct(string $content)
     {
-        $result = json_decode(urldecode(str_replace("\xEF\xBB\xBF", '', $result)), true);
+        $result = json_decode(urldecode(str_replace("\xEF\xBB\xBF", '', $content)), true);
         if (!$result) {
-            throw new EmailageValidatorException('Emailage response cannot be parsed from JSON');
+            throw EmailageValidatorException::forInvalidResult($content);
         }
 
         $this->errorCode = $result['responseStatus']['errorCode'];
         $this->errorMessage = $result['responseStatus']['description'];
+
+        if ($this->errorCode) {
+            throw EmailageValidatorException::forErrorCode($this->errorCode, $this->errorMessage);
+        }
 
         $this->query = $result['query'];
         $this->type = $this->query['queryType'];
     }
 
     /**
-     * Returns true or false if the request could be performed
+     * Returns true or false if the request could be performed.
      * @return bool
      */
     public function isSuccessful()
@@ -38,7 +39,7 @@ abstract class Message
     }
 
     /**
-     * Returns the email, ip or email+ip combination that was originally queried
+     * Returns the email, ip or email+ip combination that was originally queried.
      * @return string
      */
     public function query()
@@ -47,7 +48,7 @@ abstract class Message
     }
 
     /**
-     * Returns the kind of query made to the platform
+     * Returns the kind of query made to the platform.
      * @return string
      */
     public function queryType()
@@ -56,7 +57,7 @@ abstract class Message
     }
 
     /**
-     * Returns error code for the request if was successful it's 0
+     * Returns error code for the request if was successful it's 0.
      * @return int
      */
     public function errorCode()
@@ -65,12 +66,11 @@ abstract class Message
     }
 
     /**
-     * Returns error message for the request if was successful it's empty
+     * Returns error message for the request if was successful it's empty.
      * @return string
      */
     public function errorMessage()
     {
         return $this->errorMessage;
     }
-
 }

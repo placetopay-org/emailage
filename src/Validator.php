@@ -1,11 +1,8 @@
 <?php
 
-
 namespace PlacetoPay\Emailage;
 
-
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use PlacetoPay\Emailage\Exceptions\EmailageValidatorException;
 use PlacetoPay\Emailage\Messages\FlagResponse;
 use PlacetoPay\Emailage\Messages\RiskResponse;
@@ -18,13 +15,13 @@ class Validator
     protected $signatureMethod = 'sha256';
 
     /**
-     * Account SID
+     * Account SID.
      * @var string
      */
     protected $account;
 
     /**
-     * API Token
+     * API Token.
      * @var string
      */
     protected $token;
@@ -39,6 +36,9 @@ class Validator
      */
     protected $verify_ssl = true;
 
+    /**
+     * @var Client
+     */
     protected $client;
 
     protected $logger;
@@ -67,10 +67,14 @@ class Validator
         self::FR_SYSTEM_AUTO_REJECT => 'FR_SYSTEM_AUTO_REJECT',
     ];
 
-    /**
-     * @param array $settings
-     */
-    public function __construct($settings)
+    public function __construct(array $settings = [])
+    {
+        if ($settings) {
+            $this->setSettings($settings);
+        }
+    }
+
+    public function setSettings(array $settings): self
     {
         $this->account = $settings['account'];
         $this->token = $settings['token'];
@@ -88,6 +92,8 @@ class Validator
         } else {
             $this->client = new Client();
         }
+
+        return $this;
     }
 
     /**
@@ -98,6 +104,10 @@ class Validator
      */
     private function execute($url, $parameters, $additional = [])
     {
+        if (!$this->account || !$this->token) {
+            throw EmailageValidatorException::forNotProvidedAuthentication();
+        }
+
         $auth = [
             'format' => 'json',
             'oauth_consumer_key' => $this->account,
@@ -110,16 +120,11 @@ class Validator
 
         $url .= '?' . http_build_query(array_merge($auth, $parameters));
 
-        try {
-            $body = version_compare($this->client::VERSION, '6.0.0', '>=') ? 'form_params' : 'body';
-            $response = $this->client->post($url, [
-                $body => $this->parseAdditional($parameters, $additional),
-                'verify' => $this->verify_ssl,
-            ]);
-            return $response->getBody()->getContents();
-        } catch (BadResponseException $e) {
-            return null;
-        }
+        $response = $this->client->post($url, [
+            'form_params' => $this->parseAdditional($parameters, $additional),
+            'verify' => $this->verify_ssl,
+        ]);
+        return $response->getBody()->getContents();
     }
 
     /**
@@ -135,14 +140,14 @@ class Validator
         $hash_Params[] = urlencode(http_build_query($auth));
 
         // Make and return the Hash.
-        return base64_encode(hash_hmac(strtolower($this->signatureMethod), join('&', $hash_Params), $this->token . '&', TRUE));
+        return base64_encode(hash_hmac(strtolower($this->signatureMethod), implode('&', $hash_Params), $this->token . '&', true));
     }
 
     /**
      * @param array $data
      * @return array
      */
-    public function parseAdditional($parameters, $data)
+    protected function parseAdditional($parameters, $data)
     {
         $parsed = [];
 
@@ -187,7 +192,6 @@ class Validator
                     $parsed['phone'] = isset($payer['address']['phone']) ? $payer['address']['phone'] : null;
                 }
             }
-
         }
 
         if (isset($data['payment'])) {
@@ -236,7 +240,7 @@ class Validator
     }
 
     /**
-     * Cleans the last + if no ip provided
+     * Cleans the last + if no ip provided.
      * @param string $email
      * @return string
      */
@@ -258,7 +262,7 @@ class Validator
     }
 
     /**
-     * Receives a email, ip or email+ip information and returns a validation response
+     * Receives a email, ip or email+ip information and returns a validation response.
      * @param string $email
      * @param array $parameters
      * @return RiskResponse
@@ -315,5 +319,4 @@ class Validator
 
         return new FlagResponse($response);
     }
-
 }

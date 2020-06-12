@@ -1,23 +1,25 @@
 <?php
 
+namespace Tests\Feature;
 
-class EmailageValidatorTest extends BaseTestCase
+use PlacetoPay\Emailage\Support\MockEmailageServer;
+use Tests\BaseTestCase;
+
+class EmailageParametersParsingTest extends BaseTestCase
 {
-
-    public function testItParsesTheAdditionalInformationCorrectly()
+    /**
+     * @test
+     */
+    public function it_parses_correctly_the_request_parameters()
     {
-        $emailage = new \PlacetoPay\Emailage\Validator([
-            'account' => 'testing',
-            'token' => 'testing',
-            'sandbox' => true,
-        ]);
+        $queryEmail = 'maryse@gmail.com';
 
         $data = [
             // Person related
             'payer' => [
                 'name' => 'Maryse',
                 'surname' => 'Gorczany',
-                'email' => 'maryse@gmail.com',
+                'email' => $queryEmail,
                 'document' => '1040035000',
                 'documentType' => 'CC',
                 'mobile' => '3006108300',
@@ -61,7 +63,7 @@ class EmailageValidatorTest extends BaseTestCase
             'userEmail' => 'user@example.com',
         ];
 
-        $parsed = $emailage->parseAdditional(['query' => 'maryse@gmail.com+'], $data);
+        $this->service()->query($queryEmail . '+', $data);
 
         $this->assertEquals([
             'email' => 'maryse@gmail.com',
@@ -87,16 +89,14 @@ class EmailageValidatorTest extends BaseTestCase
             'hashedcardnumber' => $data['instrument']['card']['number'],
             'cardfirstsix' => $data['instrument']['card']['bin'],
             'ip' => $data['ipAddress'],
-        ], $parsed);
+        ], MockEmailageServer::getInstance()->parameters());
     }
 
-    public function testItParsesTheAdditionalInformationWhenMissingData()
+    /**
+     * @test
+     */
+    public function it_parses_correctly_when_some_information_is_missing()
     {
-        $emailage = new \PlacetoPay\Emailage\Validator([
-            'account' => 'testing',
-            'token' => 'testing',
-        ]);
-
         $data = [
             // Person related
             'payer' => [
@@ -125,7 +125,7 @@ class EmailageValidatorTest extends BaseTestCase
             'userEmail' => 'user@example.com',
         ];
 
-        $parsed = $emailage->parseAdditional(['query' => 'maryse@gmail.com+'], $data);
+        $this->service()->query('maryse@gmail.com+', $data);
 
         $this->assertEquals([
             'email' => 'maryse@gmail.com',
@@ -143,17 +143,14 @@ class EmailageValidatorTest extends BaseTestCase
             'useragent' => $data['userAgent'],
             'user_email' => $data['userEmail'],
             'ip' => $data['ipAddress'],
-        ], $parsed);
+        ], MockEmailageServer::getInstance()->parameters());
     }
 
-    public function testItParsesTheIPFromTheQuery()
+    /**
+     * @test
+     */
+    public function it_parses_the_ip_from_the_query()
     {
-        $emailage = new \PlacetoPay\Emailage\Validator([
-            'account' => 'testing',
-            'token' => 'testing',
-            'sandbox' => true,
-        ]);
-
         $data = [
             // Person related
             'payer' => [
@@ -202,7 +199,7 @@ class EmailageValidatorTest extends BaseTestCase
             'userEmail' => 'user@example.com',
         ];
 
-        $parsed = $emailage->parseAdditional(['query' => 'maryse@gmail.com+127.0.0.1'], $data);
+        $this->service()->query('maryse@gmail.com+127.0.0.1', $data);
 
         $this->assertEquals([
             'email' => 'maryse@gmail.com',
@@ -228,6 +225,6 @@ class EmailageValidatorTest extends BaseTestCase
             'hashedcardnumber' => $data['instrument']['card']['number'],
             'cardfirstsix' => $data['instrument']['card']['bin'],
             'ip' => '127.0.0.1',
-        ], $parsed);
+        ], MockEmailageServer::getInstance()->parameters());
     }
 }
