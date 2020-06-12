@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use PlacetoPay\Emailage\Exceptions\EmailageValidatorException;
 use PlacetoPay\Emailage\Messages\RiskResponse;
 use Tests\BaseTestCase;
 
@@ -27,6 +28,7 @@ class RiskResponseTest extends BaseTestCase
         $this->assertEquals('Limited History for Email', $riskResponse->riskReasonMessage());
         $this->assertEquals('Moderate Fraud Risk', $riskResponse->riskAdviceMessage());
         $this->assertNull($riskResponse->ipRiskLevel());
+        $this->assertEmpty($riskResponse->ipInformation());
     }
 
     /**
@@ -60,6 +62,34 @@ class RiskResponseTest extends BaseTestCase
             'riskLevel' => '3',
             'riskLevelMessage' => 'Moderate',
         ], $riskResponse->ipInformation());
+        $this->assertEquals('', $riskResponse->sourceIndustry());
+        $this->assertEquals('', $riskResponse->lastFlaggedOn());
+        $this->assertEquals('', $riskResponse->fraudType());
+        $this->assertEquals([
+            'email' => 'pruebasp2p2016@gmail.com',
+            'age' => '',
+            'country' => 'US',
+            'exists' => 'Not Sure',
+            'status' => 'ValidDomain',
+            'firstSeen' => '2017-06-09T23:59:16Z',
+            'lastSeen' => '2017-06-09T23:59:16Z',
+            'imageUrl' => '',
+            'hits' => null,
+            'uniqueHits' => '1',
+            'domain' => [
+                'name' => 'gmail.com',
+                'age' => '1995-08-13T07:00:00Z',
+                'category' => 'Webmail',
+                'corporate' => 'No',
+                'exists' => 'Yes',
+                'company' => 'Google',
+                'countryName' => 'United States',
+                'riskLevel' => '3',
+                'riskLevelMessage' => 'Moderate',
+                'relevantInfo' => '508',
+                'relevantInfoMessage' => 'Valid Webmail Domain from United States',
+            ],
+        ], $riskResponse->emailInformation());
     }
 
     /**
@@ -71,6 +101,7 @@ class RiskResponseTest extends BaseTestCase
         $riskResponse = new RiskResponse($result);
 
         $this->assertTrue($riskResponse->isSuccessful());
+        $this->assertEquals('IPRisk', $riskResponse->queryType());
         $this->assertEquals(0, $riskResponse->errorCode());
         $this->assertEquals('', $riskResponse->errorMessage());
         $this->assertEquals('181.138.47.194', $riskResponse->query());
@@ -101,12 +132,21 @@ class RiskResponseTest extends BaseTestCase
      */
     public function it_parses_a_bad_call()
     {
-        $result = $this->unserialize('czozMTY6Iu+7v3sicXVlcnkiOnsiaXBhZGRyZXNzIjoiMTgxLjEzOC40Ny4xOTQiLCJxdWVyeVR5cGUiOiJJUFJpc2siLCJjb3VudCI6MSwiY3JlYXRlZCI6IjIwMTctMDYtMTBUMDA6MDk6MDFaIiwibGFuZyI6ImVuLVVTIiwicmVzcG9uc2VDb3VudCI6MCwicmVzdWx0cyI6W119LCJyZXNwb25zZVN0YXR1cyI6eyJzdGF0dXMiOiJmYWlsZWQiLCJlcnJvckNvZGUiOiIzMDAxIiwiZGVzY3JpcHRpb24iOiJBdXRoZW50aWNhdGlvbiBFcnJvcjogVGhlIHNpZ25hdHVyZSBkb2VzIG5vdCBtYXRjaCBvciB0aGUgdXNlci9jb25zdW1lciBrZXkgd2FzIG5vdCBmb3VuZC4ifX0iOw==');
-        $response = new RiskResponse($result);
+        $this->expectException(EmailageValidatorException::class);
+        $this->expectExceptionCode(3001);
 
-        $this->assertFalse($response->isSuccessful());
-        $this->assertEquals('IPRisk', $response->queryType());
-        $this->assertEquals(3001, $response->errorCode());
-        $this->assertEquals('Authentication Error: The signature does not match or the user/consumer key was not found.', $response->errorMessage());
+        $result = $this->unserialize('czozMTY6Iu+7v3sicXVlcnkiOnsiaXBhZGRyZXNzIjoiMTgxLjEzOC40Ny4xOTQiLCJxdWVyeVR5cGUiOiJJUFJpc2siLCJjb3VudCI6MSwiY3JlYXRlZCI6IjIwMTctMDYtMTBUMDA6MDk6MDFaIiwibGFuZyI6ImVuLVVTIiwicmVzcG9uc2VDb3VudCI6MCwicmVzdWx0cyI6W119LCJyZXNwb25zZVN0YXR1cyI6eyJzdGF0dXMiOiJmYWlsZWQiLCJlcnJvckNvZGUiOiIzMDAxIiwiZGVzY3JpcHRpb24iOiJBdXRoZW50aWNhdGlvbiBFcnJvcjogVGhlIHNpZ25hdHVyZSBkb2VzIG5vdCBtYXRjaCBvciB0aGUgdXNlci9jb25zdW1lciBrZXkgd2FzIG5vdCBmb3VuZC4ifX0iOw==');
+        new RiskResponse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_a_non_json_response()
+    {
+        $this->expectException(EmailageValidatorException::class);
+        $this->expectExceptionCode(500);
+
+        new RiskResponse('<i>Some generated HTML stuff on error</i>');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use PlacetoPay\Emailage\Exceptions\EmailageValidatorException;
 use PlacetoPay\Emailage\Support\MockEmailageServer;
 use PlacetoPay\Emailage\Validator;
 
@@ -49,5 +50,33 @@ class ValidatorTest extends BaseTestCase
 
         $this->assertEquals($authenticationSent['oauth_consumer_key'], 'AA39B910BAD84D7EBD5A5C3833468E28');
         $this->assertEquals('dnetix@gmail.com', $result->query());
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_an_unauthorized_request()
+    {
+        $this->expectException(EmailageValidatorException::class);
+        $this->expectExceptionCode(3002);
+
+        $emailage = $this->service([
+            'account' => 'unauthorized',
+        ]);
+
+        $emailage->query('191.168.0.1');
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_a_case_with_bad_settings()
+    {
+        $this->expectException(EmailageValidatorException::class);
+        $this->expectExceptionCode(400);
+
+        $emailage = new Validator();
+
+        $emailage->query('some@mail.com');
     }
 }

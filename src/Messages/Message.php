@@ -11,15 +11,19 @@ abstract class Message
     protected $query;
     protected $type;
 
-    public function __construct($result)
+    public function __construct(string $content)
     {
-        $result = json_decode(urldecode(str_replace("\xEF\xBB\xBF", '', $result)), true);
+        $result = json_decode(urldecode(str_replace("\xEF\xBB\xBF", '', $content)), true);
         if (!$result) {
-            throw new EmailageValidatorException('Emailage response cannot be parsed from JSON');
+            throw EmailageValidatorException::forInvalidResult($content);
         }
 
         $this->errorCode = $result['responseStatus']['errorCode'];
         $this->errorMessage = $result['responseStatus']['description'];
+
+        if ($this->errorCode) {
+            throw EmailageValidatorException::forErrorCode($this->errorCode, $this->errorMessage);
+        }
 
         $this->query = $result['query'];
         $this->type = $this->query['queryType'];

@@ -104,6 +104,10 @@ class Validator
      */
     private function execute($url, $parameters, $additional = [])
     {
+        if (!$this->account || !$this->token) {
+            throw EmailageValidatorException::forNotProvidedAuthentication();
+        }
+
         $auth = [
             'format' => 'json',
             'oauth_consumer_key' => $this->account,
