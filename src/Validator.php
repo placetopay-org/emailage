@@ -118,9 +118,8 @@ class Validator
         $url .= '?' . http_build_query(array_merge($auth, $parameters));
 
         try {
-            $body = version_compare($this->client::VERSION, '6.0.0', '>=') ? 'form_params' : 'body';
             $response = $this->client->post($url, [
-                $body => $this->parseAdditional($parameters, $additional),
+                'form_params' => $this->parseAdditional($parameters, $additional),
                 'verify' => $this->verify_ssl,
             ]);
             return $response->getBody()->getContents();
