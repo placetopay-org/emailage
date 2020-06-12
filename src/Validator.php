@@ -41,8 +41,6 @@ class Validator
      */
     protected $client;
 
-    protected $logger;
-
     const FR_CARD_NOT_PRESENT_FRAUD = 1;
     const FR_CUSTOMER_DISPUTE = 2;
     const FR_FIRST_PARTY_FRAUD = 3;

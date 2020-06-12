@@ -79,4 +79,17 @@ class ValidatorTest extends BaseTestCase
 
         $emailage->query('some@mail.com');
     }
+
+    /**
+     * @test
+     */
+    public function it_handles_risk_on_mock_with_email()
+    {
+        $result = $this->service()->query('risk_890@yopmail.com');
+        $this->assertEquals(890, $result->score());
+
+        $result = $this->service()->query('someother_20@yopmail.com');
+        $this->assertEquals(20, $result->score());
+        $this->assertEquals('yopmail.com', $result->emailInformation()['domain']['name']);
+    }
 }
