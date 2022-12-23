@@ -137,3 +137,57 @@ if ($result->isSuccessful()) {
     print_r($result->errorMessage());
 }
 ```
+
+### Recover the whole result from the service response
+
+```php
+print_r($emailage->fullServiceResponse());
+
+/*
+[
+    'email' => 'johndoe@gmail.com',
+    'eName' => 'John Doe',
+    'emailAge' => '',
+    'email_creation_days' => '',
+    'domainAge' => '1995-08-13T04:00:00Z',
+    'domain_creation_days' => '9069',
+    'firstVerificationDate' => '2010-07-17T07:00:00Z',
+    'first_seen_days' => '3617',
+    'lastVerificationDate' => '2020-06-12T03:37:56Z',
+    'status' => 'Verified',
+    'country' => 'US',
+    'fraudRisk' => '071 Very Low',
+    'EAReason' => 'Email Created at least 9.9 Years Ago',
+    'EAStatusID' => '2',
+    'EAReasonID' => '14',
+    'EAAdviceID' => '3',
+    'EAAdvice' => 'Lower Fraud Risk',
+    'EARiskBandID' => '1',
+    'EARiskBand' => 'Fraud Score 1 to 100',
+    'source_industry' => '',
+    'fraud_type' => '',
+    'lastflaggedon' => '',
+    'dob' => '',
+    'gender' => 'male',
+    'location' => 'Colombia',
+    'smfriends' => '53',
+    'totalhits' => '2',
+    'uniquehits' => '1',
+    'imageurl' => '',
+    'emailExists' => 'Yes',
+    'domainExists' => 'Yes',
+    'company' => '',
+    'title' => '',
+    'domainname' => 'www.domain.com',
+    'domaincompany' => 'Google',
+    'domaincountryname' => 'United States',
+    'domaincategory' => 'Webmail',
+    'domaincorporate' => 'No',
+    'domainrisklevel' => 'Moderate',
+    'domainrelevantinfo' => 'Valid Webmail Domain from United States',
+    'domainrisklevelID' => '3',
+    'domainrelevantinfoID' => '508',
+    'domainriskcountry' => 'No',
+]
+*/
+```
