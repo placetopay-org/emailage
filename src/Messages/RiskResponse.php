@@ -175,7 +175,6 @@ class RiskResponse extends Message
                 'riskLevelMessage' => $this->resultData('domainrisklevel'),
                 'relevantInfo' => $this->resultData('domainrelevantinfoID'),
                 'relevantInfoMessage' => $this->resultData('domainrelevantinfo'),
-
             ],
         ];
     }
@@ -202,5 +201,14 @@ class RiskResponse extends Message
             'latitude' => $this->resultData('ip_latitude'),
             'longitude' => $this->resultData('ip_longitude'),
         ];
+    }
+
+    /**
+     * Returns the whole first result of service response.
+     * @return array
+     */
+    public function fullServiceResponse()
+    {
+        return $this->result;
     }
 }

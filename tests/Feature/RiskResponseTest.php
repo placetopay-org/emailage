@@ -149,4 +149,18 @@ class RiskResponseTest extends BaseTestCase
 
         new RiskResponse('<i>Some generated HTML stuff on error</i>');
     }
+
+    /**
+     * @test
+     */
+    public function it_parses_the_full_service_response()
+    {
+        $result = $this->unserialize('czoxMDIzOiLvu797InF1ZXJ5Ijp7ImlwYWRkcmVzcyI6IjE4MS4xMzguNDcuMTk0IiwicXVlcnlUeXBlIjoiSVBSaXNrIiwiY291bnQiOjEsImNyZWF0ZWQiOiIyMDE3LTA2LTEwVDAwOjAwOjA4WiIsImxhbmciOiJlbi1VUyIsInJlc3BvbnNlQ291bnQiOjEsInJlc3VsdHMiOlt7ImlwYWRkcmVzcyI6IjE4MS4xMzguNDcuMTk0IiwiaXBfcmlza2xldmVsaWQiOiIzIiwiaXBfcmlza2xldmVsIjoiTW9kZXJhdGUiLCJpcF9yaXNrcmVhc29uaWQiOiIzMDEiLCJpcF9yaXNrcmVhc29uIjoiTW9kZXJhdGUgUmlzayIsImlwX3JlcHV0YXRpb24iOiJHb29kIiwiaXBfYW5vbnltb3VzZGV0ZWN0ZWQiOiIiLCJpcF9pc3AiOiIiLCJpcF9vcmciOiIiLCJpcF91c2VyVHlwZSI6IiIsImlwX25ldFNwZWVkQ2VsbCI6IiIsImlwX2NvcnBvcmF0ZVByb3h5IjoiIiwiaXBfY29udGluZW50Q29kZSI6IiIsImlwX2NvdW50cnkiOiIiLCJpcF9jb3VudHJ5Q29kZSI6IiIsImlwX3JlZ2lvbiI6IiIsImlwX2NpdHkiOiIiLCJpcF9jYWxsaW5nY29kZSI6IiIsImlwX21ldHJvQ29kZSI6IiIsImlwX2xhdGl0dWRlIjoiIiwiaXBfbG9uZ2l0dWRlIjoiIiwiaXBfbWFwIjoiIiwiaXBjb3VudHJ5bWF0Y2giOiIiLCJpcHJpc2tjb3VudHJ5IjoiIiwiaXBkaXN0YW5jZWttIjoiIiwiaXBkaXN0YW5jZW1pbCI6IiIsImlwYWNjdXJhY3lyYWRpdXMiOiIiLCJpcHRpbWV6b25lIjoiIiwiaXBhc251bSI6IiIsImlwZG9tYWluIjoiIiwiaXBfY291bnRyeWNvbmYiOiIiLCJpcF9yZWdpb25jb25mIjoiIiwiaXBfY2l0eWNvbmYiOiIiLCJpcF9wb3N0YWxjb2RlIjoiIiwiaXBfcG9zdGFsY29uZiI6IiIsImlwX3Jpc2tzY29yZSI6IiIsImN1c3RwaG9uZUluYmlsbGluZ2xvYyI6IiIsImNpdHlwb3N0YWxtYXRjaCI6IiIsInNoaXBjaXR5cG9zdGFsbWF0Y2giOiIiLCJwaG9uZV9zdGF0dXMiOiIiLCJzaGlwZm9yd2FyZCI6IiJ9XX0sInJlc3BvbnNlU3RhdHVzIjp7InN0YXR1cyI6InN1Y2Nlc3MiLCJlcnJvckNvZGUiOiIwIiwiZGVzY3JpcHRpb24iOiIifX0iOw==');
+
+        $expectedResult = json_decode(urldecode(str_replace("\xEF\xBB\xBF", '', $result)), true)['query']['results'][0];
+
+        $riskResponse = new RiskResponse($result);
+
+        $this->assertEquals($expectedResult, $riskResponse->fullServiceResponse());
+    }
 }
