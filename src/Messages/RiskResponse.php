@@ -10,9 +10,20 @@ class RiskResponse extends Message
     {
         parent::__construct($result);
 
-        if (isset($this->query['results']) && is_array($this->query['results']) && count($this->query['results']) > 0) {
+        if ($this->responseHasMultipleResults()) {
             $this->result = $this->query['results'][0];
         }
+    }
+
+    /**
+     * @return bool
+     */
+    private function responseHasMultipleResults()
+    {
+        return
+            isset($this->query['results'])
+            && is_array($this->query['results'])
+            && count($this->query['results']) > 0;
     }
 
     protected function resultData($key)
