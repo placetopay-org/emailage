@@ -7,4 +7,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.1.0]
 
 ### Added
-- Add ability to return full response result [Pull Request](https://github.com/placetopay/emailage/pull/10)
+- Add new information groups for RiskResponse to include missing fields [Pull Request](https://github.com/placetopay/emailage/pull/10)
