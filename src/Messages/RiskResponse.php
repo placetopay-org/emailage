@@ -168,6 +168,24 @@ class RiskResponse extends Message
     }
 
     /**
+     * The Digital Identity Score (DIS) overall score.
+     * @return int
+     */
+    public function disOverallScore()
+    {
+        return $this->resultData('overallDigitalIdentityScore');
+    }
+
+    /**
+     * The Digital Identity Score (DIS) overall score description.
+     * @return int
+     */
+    public function disOverallScoreDescrition()
+    {
+        return $this->resultData('disDescription');
+    }
+
+    /**
      * Groups information about customer's shipping or billing address related fields.
      * @return array
      */
