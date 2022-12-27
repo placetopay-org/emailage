@@ -279,8 +279,6 @@ class RiskResponse extends Message
             'netSpeed' => $this->resultData('ip_netSpeedCell'),
             'organization' => $this->resultData('ip_org'),
             'reputation' => $this->resultData('ip_reputation'),
-            'riskLevel' => $this->resultData('ip_risklevelid'),
-            'riskLevelMessage' => $this->resultData('ip_risklevel'),
             'userType' => $this->resultData('ip_userType'),
         ];
     }
