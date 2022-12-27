@@ -3,13 +3,13 @@
 ## Installation
 
 This SDK can be installed easily through composer
-```
+```bash
 composer require placetopay/emailage
 ```
 
 ## Usage
 
-```
+```php
 $emailage = new \PlacetoPay\Emailage\Validator([
     'account' => 'YOUR_MERCHANT',
     'token' => 'THE_API_KEY_PROVIDED',
@@ -24,7 +24,7 @@ Also can provide "verify_ssl" boolean to check or ignore valid ssl certificates
 
 You can send additional information to Emailage with the following structure
 
-```
+```php
 $additional = [
     // Person related
     'payer' => [
@@ -78,6 +78,7 @@ Keep in mind that additional it's optional
 
 ```php
 $result = $emailage->query('test@example.com', $additional);
+
 if ($result->isSuccessful()) {
     // There are more information about the response, see src/Messages/RiskResponse
     $score = $result->score();
@@ -92,6 +93,7 @@ if ($result->isSuccessful()) {
 
 ```php
 $result = $emailage->query('test@example.com+127.0.0.1');
+
 if ($result->isSuccessful()) {
     // There are more information about the response, see src/Messages/RiskResponse
     $score = $result->score();
@@ -106,6 +108,7 @@ if ($result->isSuccessful()) {
 
 ```php
 $result = $emailage->query('127.0.0.1');
+
 if ($result->isSuccessful()) {
     $riskLevel = $result->ipRiskLevel();
 } else {
@@ -118,6 +121,7 @@ if ($result->isSuccessful()) {
 
 ```php
 $result = $emailage->flagFraudEmail('test@example.com', \PlacetoPay\Emailage\Validator::FR_CARD_NOT_PRESENT_FRAUD);
+
 if ($result->isSuccessful()) {
     // Email has been flagged
 } else {
@@ -130,6 +134,7 @@ if ($result->isSuccessful()) {
 
 ```php
 $result = $emailage->flagGoodEmail('test@example.com');
+
 if ($result->isSuccessful()) {
     // Email has been flagged
 } else {
