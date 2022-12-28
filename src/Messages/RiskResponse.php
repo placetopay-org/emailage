@@ -356,7 +356,7 @@ class RiskResponse extends Message
      * Groups information about the email owner related fields.
      * @return array
      */
-        public function ownerInformation()
+    public function ownerInformation()
     {
         return [
             'eName' => $this->resultData('eName'),
