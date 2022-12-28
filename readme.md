@@ -145,7 +145,7 @@ if ($result->isSuccessful()) {
 
 ### Getting the EmailAge Response
 Although Emailage delivers the results in a one-level-deep array, you have access to convenient methods for getting 
-specifically the information we need from the returned response. You can organize the data in a grouped way according to 
+specifically the information you need from the returned response. You can organize the data in a grouped way according to 
 the type of data:
 
 ```php
