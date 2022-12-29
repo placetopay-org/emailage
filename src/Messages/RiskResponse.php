@@ -10,17 +10,29 @@ class RiskResponse extends Message
     {
         parent::__construct($result);
 
-        if (isset($this->query['results']) && is_array($this->query['results']) && count($this->query['results']) > 0) {
+        if ($this->responseHasMultipleResults()) {
             $this->result = $this->query['results'][0];
         }
     }
 
+    /**
+     * @return bool
+     */
+    private function responseHasMultipleResults()
+    {
+        return
+            isset($this->query['results'])
+            && is_array($this->query['results'])
+            && count($this->query['results']) > 0;
+    }
+
     protected function resultData($key)
     {
-        if (isset($this->result[$key])) {
-            return $this->result[$key];
+        if (! isset($this->result[$key])) {
+            return null;
         }
-        return null;
+
+        return $this->result[$key];
     }
 
     /**
@@ -93,6 +105,15 @@ class RiskResponse extends Message
     }
 
     /**
+     * Returns the risk band description.
+     * @return string|null
+     */
+    public function riskBandMessage()
+    {
+        return $this->resultData('EARiskBand');
+    }
+
+    /**
      * Provides the fraud risk for the IP Address, the values for this field are.
      * @deprecated
      *  1 - Very High
@@ -147,6 +168,71 @@ class RiskResponse extends Message
     }
 
     /**
+     * The Digital Identity Score (DIS) overall score.
+     * @return int
+     */
+    public function disOverallScore()
+    {
+        return $this->resultData('overallDigitalIdentityScore');
+    }
+
+    /**
+     * The Digital Identity Score (DIS) overall score description.
+     * @return int
+     */
+    public function disOverallScoreDescrition()
+    {
+        return $this->resultData('disDescription');
+    }
+
+    /**
+     * Groups information about customer's shipping or billing address related fields.
+     * @return array
+     */
+    public function addressInformation()
+    {
+        return [
+            'billRiskCountry' => $this->resultData('billriskcountry'),
+            'cityPostalMatch' => $this->resultData('citypostalmatch'),
+            'domainCountryMatch' => $this->resultData('domaincountrymatch'),
+            'shippingCityPostalMatch' => $this->resultData('shipcitypostalmatch'),
+            'shippingForward' => $this->resultData('shipforward'),
+        ];
+    }
+
+    /**
+     * Groups information about Digital Identity Score related fields.
+     * @return array
+     */
+    public function digitalIdentityScoreInformation()
+    {
+        return [
+            'description' => $this->resultData('disDescription'),
+            'overallScore' => $this->resultData('overallDigitalIdentityScore'),
+            'billAddressToFullNameConfidence' => $this->resultData('billAddressToFullNameConfidence'),
+            'billAddressToLastNameConfidence' => $this->resultData('billAddressToLastNameConfidence'),
+            'emailToIpConfidence' => $this->resultData('emailToIpConfidence'),
+            'emailToBillAddressConfidence' => $this->resultData('emailToBillAddressConfidence'),
+            'emailToFullNameConfidence' => $this->resultData('emailToFullNameConfidence'),
+            'emailToLastNameConfidence' => $this->resultData('emailToLastNameConfidence'),
+            'emailToPhoneConfidence' => $this->resultData('emailToPhoneConfidence'),
+            'emailToShipAddressConfidence' => $this->resultData('emailToShipAddressConfidence'),
+            'ipToBillAddressConfidence' => $this->resultData('ipToBillAddressConfidence'),
+            'ipToFullNameConfidence' => $this->resultData('ipToFullNameConfidence'),
+            'ipToLastNameConfidence' => $this->resultData('ipToLastNameConfidence'),
+            'ipToPhoneConfidence' => $this->resultData('ipToPhoneConfidence'),
+            'ipToShipAddressConfidence' => $this->resultData('ipToShipAddressConfidence'),
+            'phoneToBillAddressConfidence' => $this->resultData('phoneToBillAddressConfidence'),
+            'phoneToFullNameConfidence' => $this->resultData('phoneToFullNameConfidence'),
+            'phoneToLastNameConfidence' => $this->resultData('phoneToLastNameConfidence'),
+            'phoneToShipAddressConfidence' => $this->resultData('phoneToShipAddressConfidence'),
+            'shipAddressToBillAddressConfidence' => $this->resultData('shipAddressToBillAddressConfidence'),
+            'shipAddressToFullNameConfidence' => $this->resultData('shipAddressToFullNameConfidence'),
+            'shipAddressToLastNameConfidence' => $this->resultData('shipAddressToLastNameConfidence'),
+        ];
+    }
+
+    /**
      * Groups information about the email.
      * @return array
      */
@@ -156,13 +242,16 @@ class RiskResponse extends Message
             'email' => $this->resultData('email'),
             'age' => $this->resultData('emailAge'),
             'country' => $this->resultData('country'),
+            'company' => $this->resultData('company'),
             'exists' => $this->resultData('emailExists'),
             'status' => $this->resultData('status'),
             'firstSeen' => $this->resultData('firstVerificationDate'),
+            'firstSeenDays' => $this->resultData('first_seen_days'),
             'lastSeen' => $this->resultData('lastVerificationDate'),
             'imageUrl' => $this->resultData('imageurl'),
-            'hits' => $this->resultData('hits'),
+            'hits' => $this->resultData('totalhits'),
             'uniqueHits' => $this->resultData('uniquehits'),
+            'creationDays' => $this->resultData('email_creation_days'),
             'domain' => [
                 'name' => $this->resultData('domainname'),
                 'age' => $this->resultData('domainAge'),
@@ -172,10 +261,12 @@ class RiskResponse extends Message
                 'company' => $this->resultData('domaincompany'),
                 'countryName' => $this->resultData('domaincountryname'),
                 'riskLevel' => $this->resultData('domainrisklevelID'),
+                'riskCountry' => $this->resultData('domainriskcountry'),
                 'riskLevelMessage' => $this->resultData('domainrisklevel'),
                 'relevantInfo' => $this->resultData('domainrelevantinfoID'),
                 'relevantInfoMessage' => $this->resultData('domainrelevantinfo'),
-
+                'creationDays' => $this->resultData('domain_creation_days'),
+                'fraudRisk' => $this->resultData('fraudRisk'),
             ],
         ];
     }
@@ -186,21 +277,120 @@ class RiskResponse extends Message
      */
     public function ipInformation()
     {
-        $ipaddress = $this->resultData('ipaddress');
-        if (empty($ipaddress)) {
+        if (empty($this->resultData('ipaddress'))) {
             return [];
         }
 
         return [
             'ip' => $this->resultData('ipaddress'),
-            'riskLevel' => $this->resultData('ip_risklevelid'),
-            'riskLevelMessage' => $this->resultData('ip_risklevel'),
-            'isp' => $this->resultData('ip_isp'),
-            'country' => $this->resultData('ip_countryCode'),
-            'region' => $this->resultData('ip_region'),
+            'anonymousDetected' => $this->resultData('ip_anonymousdetected'),
+            'autonomousSystemNumber' => $this->resultData('ipasnum'),
             'city' => $this->resultData('ip_city'),
+            'corporateProxy' => $this->resultData('ip_corporateProxy'),
+            'country' => $this->resultData('ip_countryCode'),
+            'countryMatch' => $this->resultData('ipcountrymatch'),
+            'domain' => $this->resultData('ipdomain'),
+            'isp' => $this->resultData('ip_isp'),
+            'region' => $this->resultData('ip_region'),
             'latitude' => $this->resultData('ip_latitude'),
             'longitude' => $this->resultData('ip_longitude'),
+            'netSpeed' => $this->resultData('ip_netSpeedCell'),
+            'organization' => $this->resultData('ip_org'),
+            'reputation' => $this->resultData('ip_reputation'),
+            'userType' => $this->resultData('ip_userType'),
+        ];
+    }
+
+    /**
+     * Groups information about the IP and device risk related fields.
+     * @return array
+     */
+    public function ipRiskInformation()
+    {
+        if (empty($this->resultData('ipaddress'))) {
+            return [];
+        }
+
+        return [
+            'level' => $this->resultData('ip_risklevelid'),
+            'levelMessage' => $this->resultData('ip_risklevel'),
+            'reasonId' => $this->resultData('ip_riskreasonid'),
+            'reason' => $this->resultData('ip_riskreason'),
+            'riskCountry' => $this->resultData('ipriskcountry'),
+        ];
+    }
+
+    /**
+     * Groups information about the IP location related fields.
+     * @return array
+     */
+    public function ipLocationInformation()
+    {
+        if (empty($this->resultData('ipaddress'))) {
+            return [];
+        }
+
+        return [
+            'callingCode' => $this->resultData('ip_callingcode'),
+            'city' => $this->resultData('ip_city'),
+            'cityConfidence' => $this->resultData('ip_cityconf'),
+            'continentCode' => $this->resultData('ip_continentCode'),
+            'country' => $this->resultData('ip_country'),
+            'countryCode' => $this->resultData('ip_countryCode'),
+            'countryConfidence' => $this->resultData('ip_countryconf'),
+            'distanceMil' => $this->resultData('ipdistancemil'),
+            'distanceKm' => $this->resultData('ipdistancekm'),
+            'latitude' => $this->resultData('ip_latitude'),
+            'longitude' => $this->resultData('ip_longitude'),
+            'map' => $this->resultData('ip_map'),
+            'metroCode' => $this->resultData('ip_metroCode'),
+            'region' => $this->resultData('ip_region'),
+            'regionConfidence' => $this->resultData('ip_regionconf'),
+            'postalCode' => $this->resultData('ip_postalcode'),
+            'postalConfidence' => $this->resultData('ip_postalconf'),
+            'timeZone' => $this->resultData('iptimezone'),
+        ];
+    }
+
+    /**
+     * Groups information about the email owner related fields.
+     * @return array
+     */
+    public function ownerInformation()
+    {
+        return [
+            'eName' => $this->resultData('eName'),
+            'location' => $this->resultData('location'),
+            'title' => $this->resultData('title'),
+        ];
+    }
+
+    /**
+     * Groups information about the phone related fields.
+     * @return array
+     */
+    public function phoneInformation()
+    {
+        return [
+            'carrierName' => $this->resultData('phonecarriername'),
+            'carrierType' => $this->resultData('phonecarriertype'),
+            'inBillingLocation' => $this->resultData('custphoneInbillingloc'),
+            'owner' => $this->resultData('phoneowner'),
+            'ownerMatch' => $this->resultData('phoneownermatch'),
+            'ownerType' => $this->resultData('phoneownertype'),
+            'status' => $this->resultData('phone_status'),
+        ];
+    }
+
+    /**
+     * Groups information about the email social media related fields.
+     * @return array
+     */
+    public function socialMediaInformation()
+    {
+        return [
+            'smFriends' => $this->resultData('smfriends'),
+            'smLinks' => $this->resultData('smlinks'),
         ];
     }
 }
