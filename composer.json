@@ -37,6 +37,7 @@
     "phpunit/phpunit": "^9.5|^10.0"
   },
   "scripts": {
-    "php-cs-fixer": "vendor/bin/php-cs-fixer fix --config=.php_cs"
-  }
+      "php-cs": "phpcs --standard=PSR2 --ignore=tests/coverage app/ tests/",
+      "php-cs-fixer": "vendor/bin/php-cs-fixer fix"
+    }
 }

@@ -28,7 +28,7 @@ class RiskResponse extends Message
 
     protected function resultData($key)
     {
-        if (! isset($this->result[$key])) {
+        if (!isset($this->result[$key])) {
             return null;
         }
 
