@@ -26,15 +26,15 @@
     }
   },
   "require": {
-    "php": ">=7.3",
+    "php": "^8.1",
     "ext-json": "*",
-    "guzzlehttp/guzzle": "^6.3|^7.0.1",
-    "psr/log": "^1.1"
+    "guzzlehttp/guzzle": "^7.5",
+    "psr/log": "^1|^2|^3"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.1",
-    "friendsofphp/php-cs-fixer": "^2.16",
-    "phpunit/phpunit": "^8.5"
+    "friendsofphp/php-cs-fixer": "^3.21",
+    "phpunit/phpunit": "^9.5|^10.0"
   },
   "scripts": {
     "php-cs-fixer": "vendor/bin/php-cs-fixer fix --config=.php_cs"
