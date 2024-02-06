@@ -319,7 +319,7 @@ class RiskResponseTest extends BaseTestCase
                 'smLinks' => [
                     [
                         'source' => 'GooglePlus',
-                        'link' => 'https://plus.google.com/10886018'
+                        'link' => 'https://plus.google.com/10886018',
                     ],
                 ],
             ],

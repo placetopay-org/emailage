@@ -41,16 +41,16 @@ class Validator
      */
     protected $client;
 
-    const FR_CARD_NOT_PRESENT_FRAUD = 1;
-    const FR_CUSTOMER_DISPUTE = 2;
-    const FR_FIRST_PARTY_FRAUD = 3;
-    const FR_FIRST_PAYMENT_DEFAULT = 4;
-    const FR_APPLICATION_IDENTITY_THEFT = 5;
-    const FR_ACCOUNT_IDENTITY_THEFT = 6;
-    const FR_SUSPECTED_FRAUD = 7;
-    const FR_SYNTHETIC_ID = 8;
-    const FR_OTHER = 9;
-    const FR_SYSTEM_AUTO_REJECT = 10;
+    public const FR_CARD_NOT_PRESENT_FRAUD = 1;
+    public const FR_CUSTOMER_DISPUTE = 2;
+    public const FR_FIRST_PARTY_FRAUD = 3;
+    public const FR_FIRST_PAYMENT_DEFAULT = 4;
+    public const FR_APPLICATION_IDENTITY_THEFT = 5;
+    public const FR_ACCOUNT_IDENTITY_THEFT = 6;
+    public const FR_SUSPECTED_FRAUD = 7;
+    public const FR_SYNTHETIC_ID = 8;
+    public const FR_OTHER = 9;
+    public const FR_SYSTEM_AUTO_REJECT = 10;
 
     public static $FRAUD_REASONS = [
         self::FR_CARD_NOT_PRESENT_FRAUD => 'FR_CARD_NOT_PRESENT_FRAUD',
